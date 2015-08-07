@@ -20,29 +20,177 @@
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
     <script>
+// This example creates circles on the map of varyig sizes
+// First, create an object containing LatLng.
+var citymap = {};
+
+citymap['newyork'] = {
+  center: new google.maps.LatLng(40.714352, -74.005973),
+  circle: 30000
+};
+citymap['neworleans'] = {
+  center: new google.maps.LatLng(30.0329964, -89.8825634),
+  circle: 30000
+};
+
+citymap['washingtondc'] = {
+  center: new google.maps.LatLng(38.8993488,-77.0145665),
+  circle: 30000
+};
+
+citymap['baltimore'] = {
+  center: new google.maps.LatLng(39.2847064,-76.6204859),
+  circle: 30000
+};
+
+citymap['seattle'] = {
+  center: new google.maps.LatLng(47.614848,-122.3359058),
+  circle: 30000
+};
 
 
+citymap['grandcanyon'] = {
+  center: new google.maps.LatLng(36.3078536,-112.783480),
+  circle: 30000
+};
 
+citymap['phoenix'] = {
+  center: new google.maps.LatLng(33.6054149,-112.125051),
+  circle: 30000
+};
+
+citymap['tucson'] = {
+  center: new google.maps.LatLng(32.15591,-110.883805),
+  circle: 30000
+};
+citymap['las vegas'] = {
+  center: new google.maps.LatLng(36.125,-115.175),
+  circle: 30000
+};
+
+citymap['moab'] = {
+  center: new google.maps.LatLng(38.574398,-109.5514186),
+  circle: 30000
+};
+citymap['losangeles'] = {
+  center: new google.maps.LatLng(33.7716325, -116.7),
+  circle: 3000000
+};
+
+citymap['deathvalley'] = {
+  center: new google.maps.LatLng(36.5053891,-117.0794078),
+  circle: 30000
+};
+
+citymap['sanluisobispo'] = {
+  center: new google.maps.LatLng(35.272496,-120.6703861),
+  circle: 30000
+};
+
+citymap['sanfrancisco'] = {
+  center: new google.maps.LatLng(37.7577,-122.437),
+  circle: 30000
+};
+
+
+citymap['vancouver'] = {
+  center: new google.maps.LatLng(49.2569332,-123.1239135),
+  circle: 30000
+};
+
+citymap['santacruz'] = {
+  center: new google.maps.LatLng(36.9794772,-122.0316793),
+  circle: 30000
+};
+citymap['maui'] = {
+  center: new google.maps.LatLng(20.8029957, -156.3379827),
+  circle: 55000
+};
+citymap['bigisland'] = {
+  center: new google.maps.LatLng(19.701385, -155.349427),
+  circle: 55000
+};
+
+citymap['manila'] = {
+  center: new google.maps.LatLng(14.5980716, 120.9796513),
+  circle: 3000000
+};
+
+citymap['palawan'] = {
+  center: new google.maps.LatLng(10.1925595, 118.9265829),
+  circle: 55000
+};
+
+
+citymap['culion'] = {
+  center: new google.maps.LatLng(11.8110286,119.9312022),
+  circle: 30000
+};
+
+citymap['cebu'] = {
+  center: new google.maps.LatLng(10.4683008,123.7107063),
+  circle: 55000
+};
+
+citymap['bohol'] = {
+  center: new google.maps.LatLng(9.8709553,124.169553),
+  circle: 55000
+};
+
+citymap['saigon'] = {
+  center: new google.maps.LatLng(10.768451,106.6943626),
+  circle: 55000
+};
+
+citymap['singapore'] = {
+  center: new google.maps.LatLng(1.3147308,103.8470128),
+  circle: 55000
+};
+
+citymap['xiamen'] = {
+  center: new google.maps.LatLng(24.4791977,118.1092072),
+  circle: 55000
+};
+
+citymap['hongkong'] = {
+  center: new google.maps.LatLng(22.3593252,114.1408686),
+  circle: 55000
+};
+
+
+citymap['munich'] = {
+  center: new google.maps.LatLng( 48.1549107,11.5418357),
+  circle: 30000
+};
+
+citymap['herrsching'] = {
+  center: new google.maps.LatLng( 47.8624923,11.4466598),
+  circle: 30000
+};
+
+citymap['frankfurt'] = {
+  center: new google.maps.LatLng( 50.2074275,9.7429653),
+  circle: 30000
+};
+
+citymap['mainz'] = {
+  center: new google.maps.LatLng( 49.9344135,8.2515068),
+  circle: 30000
+};
+
+citymap['cologne'] = {
+  center: new google.maps.LatLng( 50.9572449,6.967322),
+  circle: 30000
+};
+
+citymap['fulda'] = {
+  center: new google.maps.LatLng( 50.5644255,9.6495359),
+  circle: 30000
+};
+
+var cityCircle;
 
 function initialize() {
-
-    // This example creates circles on the map of varyig sizes
-    // First, create an object containing LatLng.
-    var citymap = {};
-    var cityCircle;
-
-    $.getJSON("https://raw.githubusercontent.com/carlynlee/carlynlee.github.io/master/README.md", function(data) {
-        console.log(data); // this will show the info it in firebug console
-        //$.each(data.data, function(k, v) {
-        /// do stuff
-            //alert(k)
-            //citymap['fulda'] = {
-            //  center: new google.maps.LatLng( 50.5644255,9.6495359),
-            //  circle: 30000
-            //};
-        //}); 
-
-    });
   // Create the map.
   var mapOptions = {
     zoom: 2,
