@@ -31,8 +31,18 @@ function initialize() {
     var citymap = {};
     var cityCircle;
 
-    $.getJSON("https://raw.githubusercontent.com/carlynlee/carlynlee.github.io/master/README.md", function(data) {
+//TODO, store the citymap.json somewhere else
+    $.getJSON("https://raw.githubusercontent.com/carlynlee/carlynlee.github.io/master/cities.json", function(data) {
         console.log(data); // this will show the info it in firebug console
+
+        $.each( data.cities, function( index, value ){
+               citymap[ value[0] ] ={
+                    center: new google.maps.LatLng( value[1],value[2]),
+                    circle: value[3]
+
+               };
+
+            });
         //$.each(data.data, function(k, v) {
         /// do stuff
             //alert(k)
