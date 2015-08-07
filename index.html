@@ -22,35 +22,32 @@
     <script>
 
 
-
-
-function initialize() {
-
     // This example creates circles on the map of varyig sizes
     // First, create an object containing LatLng.
     var citymap = {};
     var cityCircle;
 
-//TODO, store the citymap.json somewhere else
-    $.getJSON("https://raw.githubusercontent.com/carlynlee/carlynlee.github.io/master/cities.json", function(data) {
-        console.log(data); // this will show the info it in firebug console
+function initialize() {
 
-        $.each( data.cities, function( index, value ){
-               citymap[ value[0] ] ={
-                    center: new google.maps.LatLng( value[1],value[2]),
-                    circle: value[3]
 
-               };
 
-            });
-        //$.each(data.data, function(k, v) {
-        /// do stuff
-            //alert(k)
-            //citymap['fulda'] = {
-            //  center: new google.maps.LatLng( 50.5644255,9.6495359),
-            //  circle: 30000
-            //};
-        //}); 
+//TODO, store the cities.json somewhere else. create a new repo for all data
+    $.ajax({
+        url: "https://raw.githubusercontent.com/carlynlee/carlynlee.github.io/master/cities.json", 
+        async: false,
+        dataType: 'json',
+        success: function(data) {
+            console.log(data); // this will show the info it in firebug console
+
+            $.each( data.cities, function( index, value ){
+                   citymap[ value[0] ] ={
+                        center: new google.maps.LatLng( value[1],value[2]),
+                        circle: value[3]
+
+                   };
+
+                });
+        }
 
     });
   // Create the map.
@@ -285,9 +282,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h3>The buttons below are impossible to resist.</h3>
-                    <a href="#" class="btn btn-lg btn-light">Click Me!</a>
-                    <a href="#" class="btn btn-lg btn-dark">Look at Me!</a>
+                    <h3>I love to travel and experience different cultures. Below is a very rough coverage map of places I have been. You can zoom in and view the highlighted cities. Alternatively you can view the JSON serialized list of cities. </h3>
+                    <a href="https://raw.githubusercontent.com/carlynlee/carlynlee.github.io/master/cities.json" class="btn btn-lg btn-light" target="new">View List</a>
+                    <a href="#" class="btn btn-lg btn-dark">Format</a>
                 </div>
             </div>
         </div>
