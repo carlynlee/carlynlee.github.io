@@ -1,6 +1,24 @@
 {
     "cities": [
         [
+            "San Jose, Costa Rica",
+            9.9281,
+            84.0907,
+            30000
+        ],
+        [
+            "La Fortuna, Costa Rica",
+            10.4678,
+            84.6427,
+            30000
+        ],
+        [
+            "Stockholm, Sweden",
+            59.334591,
+            18.063240,
+            30000
+        ],
+        [
             "Istanbul, Turkey",
             41.015137,
             28.979530,
