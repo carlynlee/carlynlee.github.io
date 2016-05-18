@@ -1,6 +1,12 @@
 {
     "cities": [
         [
+            "Kansas City, MO",
+            39.0997,
+            94.5786,
+            30000
+        ],
+        [
             "San Jose, Costa Rica",
             9.934739,
             -84.087502,
