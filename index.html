@@ -33,7 +33,7 @@ function initialize() {
 
 //TODO, store the cities.json somewhere else. create a new repo for all data
     $.ajax({
-        url: "https://raw.githubusercontent.com/carlynlee/carlynlee.github.io/master/cities.json", 
+        url: "https://raw.githubusercontent.com/carlynlee/carlynlee.github.io/master/data/cities.json", 
         async: false,
         dataType: 'json',
         success: function(data) {
@@ -171,7 +171,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                 <h4>
                                     <strong>Flight Data</strong>
                                 </h4>
-                                <p>Data taken from my flight training.</p>
+                                <p>Data collected from my flight training.</p>
                                 <a href="SBAdmin/index.html" class="btn btn-light">More</a>
                             </div>
                         </div>
@@ -283,7 +283,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h3>Sample of google maps API of places I visited. The highlighted areas are roughly the places I explored. Zoom in for details. Alternatively here is a JSON serialized list: </h3>
-                    <a href="https://raw.githubusercontent.com/carlynlee/carlynlee.github.io/master/cities.json" class="btn btn-lg btn-light" >View List</a>
+                    <a href="https://raw.githubusercontent.com/carlynlee/carlynlee.github.io/master/data/cities.json" class="btn btn-lg btn-light" >View List</a>
                     <a href="#" class="btn btn-lg btn-dark">Format</a>
                 </div>
             </div>
