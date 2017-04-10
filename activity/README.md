@@ -24,3 +24,22 @@ Start Bootstrap is based on the [Bootstrap](http://getbootstrap.com/) framework 
 ## Copyright and License
 
 Copyright 2013-2015 Iron Summit Media Strategies, LLC. Code released under the [Apache 2.0](https://github.com/IronSummitMedia/startbootstrap-sb-admin/blob/gh-pages/LICENSE) license.
+
+## TODO:
+### in Dashboard
+
+* Area Chart - show progress on last ride
+
+* Task Panel -  show last activity
+
+* Replace Transactions panel with rankings on starred segments:
+
+``` GET all info on starred segments
+ curl -G https://www.strava.com/api/v3/segments/starred \
+    -H "Authorization: Bearer a1a5ce7129a73ebfd5d7ccf84db5a723444cc728"
+    ```
+
+``` GET details and progress for segment :id
+    curl -G https://www.strava.com/api/v3/segment_efforts/:id \
+    -H "Authorization: Bearer a1a5ce7129a73ebfd5d7ccf84db5a723444cc728"
+```
