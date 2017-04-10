@@ -46,6 +46,7 @@ for each starred segment show distance, grade, ranking for segment :id
 ``` 
     curl -G https://www.strava.com/api/v3/segment_efforts/:id \
     -H "Authorization: Bearer a1a5ce7129a73ebfd5d7ccf84db5a723444cc728"
+``` 
 
 example
 ```
