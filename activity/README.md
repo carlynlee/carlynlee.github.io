@@ -42,15 +42,15 @@ list all starred segments
 ```
 
 
-for each starred segment show distance, grade, ranking for segment :id
+for each starred segment show my effort: distance, grade, ranking (use segment :id)
 ``` 
-    curl -G https://www.strava.com/api/v3/segment_efforts/:id \
+curl -G https://www.strava.com/api/v3/segment_efforts/:id \
     -H "Authorization: Bearer a1a5ce7129a73ebfd5d7ccf84db5a723444cc728"
 ``` 
 
 example
 ```
-        curl -G https://www.strava.com/api/v3/segment_efforts/22813051946 \
+curl -G https://www.strava.com/api/v3/segment_efforts/22734738713 \
     -H "Authorization: Bearer a1a5ce7129a73ebfd5d7ccf84db5a723444cc728"
 ```
 
