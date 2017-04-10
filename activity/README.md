@@ -30,16 +30,27 @@ Copyright 2013-2015 Iron Summit Media Strategies, LLC. Code released under the [
 
 * Area Chart - show progress on last ride
 
-* Task Panel -  show last activity
+* Task Panel -  show last activity  with links to ride details. use  https://www.strava.com/activities/:id  (for example: https://www.strava.com/activities/932006201)
 
 * Replace Transactions panel with rankings on starred segments:
 
-``` GET all info on starred segments
+
+list all starred segments
+``` 
  curl -G https://www.strava.com/api/v3/segments/starred \
     -H "Authorization: Bearer a1a5ce7129a73ebfd5d7ccf84db5a723444cc728"
-    ```
+```
 
-``` GET details and progress for segment :id
+
+for each starred segment show distance, grade, ranking for segment :id
+``` 
     curl -G https://www.strava.com/api/v3/segment_efforts/:id \
     -H "Authorization: Bearer a1a5ce7129a73ebfd5d7ccf84db5a723444cc728"
+
+example
 ```
+        curl -G https://www.strava.com/api/v3/segment_efforts/22813051946 \
+    -H "Authorization: Bearer a1a5ce7129a73ebfd5d7ccf84db5a723444cc728"
+```
+
+
