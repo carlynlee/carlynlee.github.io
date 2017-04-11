@@ -1,83 +1,62 @@
 // Morris.js Charts sample data for SB Admin template
 
 $(function() {
+    $.ajax({
+      type: "GET",
+      url: "https://www.strava.com/api/v3/athlete/activities",
+      beforeSend: function (xhr, settings) {
+        xhr.setRequestHeader('Authorization', 'Bearer ' + "a1a5ce7129a73ebfd5d7ccf84db5a723444cc728");
+      },
+      success: function (data_strava) {
+        data=[];
+        ride_num=0;
+        run_num=0;
+        swim_num=0;
+        data_strava.forEach(function(element) {
+            if (element.type.toLowerCase()=="ride")
+            {
+                ride_num=ride_num+1;
+                data.push(  (({ start_date, elev_high, elev_low, total_elevation_gain }) => ({ start_date, elev_high, elev_low, total_elevation_gain }))(element)  );
+            }
+            if (element.type.toLowerCase()=="run")
+                run_num=run_num+1;
 
-    // Area Chart
-    Morris.Area({
-        element: 'morris-area-chart',
-        data: [{
-            period: '2010 Q1',
-            iphone: 2666,
-            ipad: null,
-            itouch: 2647
-        }, {
-            period: '2010 Q2',
-            iphone: 2778,
-            ipad: 2294,
-            itouch: 2441
-        }, {
-            period: '2010 Q3',
-            iphone: 4912,
-            ipad: 1969,
-            itouch: 2501
-        }, {
-            period: '2010 Q4',
-            iphone: 3767,
-            ipad: 3597,
-            itouch: 5689
-        }, {
-            period: '2011 Q1',
-            iphone: 6810,
-            ipad: 1914,
-            itouch: 2293
-        }, {
-            period: '2011 Q2',
-            iphone: 5670,
-            ipad: 4293,
-            itouch: 1881
-        }, {
-            period: '2011 Q3',
-            iphone: 4820,
-            ipad: 3795,
-            itouch: 1588
-        }, {
-            period: '2011 Q4',
-            iphone: 15073,
-            ipad: 5967,
-            itouch: 5175
-        }, {
-            period: '2012 Q1',
-            iphone: 10687,
-            ipad: 4460,
-            itouch: 2028
-        }, {
-            period: '2012 Q2',
-            iphone: 8432,
-            ipad: 5713,
-            itouch: 1791
-        }],
-        xkey: 'period',
-        ykeys: ['iphone', 'ipad', 'itouch'],
-        labels: ['iPhone', 'iPad', 'iPod Touch'],
-        pointSize: 2,
-        hideHover: 'auto',
-        resize: true
-    });
+            if (element.type.toLowerCase()=="swim")
+                swim_num=swim_num+1;
 
-    // Donut Chart
-    Morris.Donut({
-        element: 'morris-donut-chart',
-        data: [{
-            label: "Download Sales",
-            value: 12
-        }, {
-            label: "In-Store Sales",
-            value: 30
-        }, {
-            label: "Mail-Order Sales",
-            value: 20
-        }],
-        resize: true
+   
+        });
+         // Area Chart
+        Morris.Area({
+            element: 'morris-area-chart',
+            data: data,
+            xkey: 'start_date',
+            ykeys: ['elev_high', 'elev_low', 'total_elevation_gain'],
+            labels: ['Elev. High (m)', 'Elev. Low (m)', 'total elevation gain (m)'],
+            pointSize: 2,
+            hideHover: 'auto',
+            resize: true
+        });
+
+
+
+        // Donut Chart
+        Morris.Donut({
+            element: 'morris-donut-chart',
+            data: [{
+                label: "Running",
+                value: run_num
+            }, {
+                label: "Swimming",
+                value: swim_num
+            }, {
+                label: "Cycling",
+                value: ride_num
+            }],
+            resize: true
+        });
+
+      }
     });
 
     // Line Chart

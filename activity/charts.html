@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin - Bootstrap Admin Template</title>
+    <title>Activity Summary</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -217,13 +217,19 @@
                 <!-- Flot Charts -->
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2 class="page-header">Flot Charts</h2>
-                        <p class="lead">Flot is a pure JavaScript plotting library for jQuery, with a focus on simple usage, attractive looks and interactive features. For full usage instructions and documentation for Flot Charts, visit <a href="http://www.flotcharts.org/">http://www.flotcharts.org/</a>.</p>
+                        <h2 class="page-header">Effort Charts</h2>
+                        <p class="lead">I am using data visualisation tools and RESTful API's to help me understand how I am managing my activity effort between some of my favorite activities: cycling, running, swimming, and rock climbing. 
+
+                    
+                        <p class="lead">My data sources are from Strava API V3 (visit <a href="https://www.strava.com/athletes/5815785">my Strava profile</a>) and Mountain Project API (visit <a href="https://www.mountainproject.com/u/carlyn-lee//111473402">my Mountainproject profile</a>).</p>
+
+                        <p class="lead">To visualise these data I am using Flot Charts (visit <a href="http://www.flotcharts.org/">http://www.flotcharts.org/</a>) and
+                        Morris.js (<a href="http://morrisjs.github.io/morris.js/">http://morrisjs.github.io/morris.js/</a>)</p>
                     </div>
                 </div>
                 <!-- /.row -->
 
-                <div class="row">
+                <!--div class="row">
                     <div class="col-lg-12">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
@@ -236,7 +242,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div-->
                 <!-- /.row -->
 
                 <div class="row">
@@ -307,20 +313,14 @@
                 </div>
                 <!-- /.row -->
 
-                <!-- Morris Charts -->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h2 class="page-header">Morris Charts</h2>
-                        <p class="lead">Morris.js is a very simple API for drawing line, bar, area and donut charts. For full usage instructions and documentation for Morris.js charts, visit <a href="http://morrisjs.github.io/morris.js/">http://morrisjs.github.io/morris.js/</a>.</p>
-                    </div>
-                </div>
+         
                 <!-- /.row -->
 
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="panel panel-green">
                             <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Area Line Graph Example with Tooltips</h3>
+                                <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Elevation Efforts</h3>
                             </div>
                             <div class="panel-body">
                                 <div id="morris-area-chart"></div>
@@ -371,8 +371,28 @@
                         </div>
                     </div>
                 </div>
-                <!-- /.row -->
 
+                <!-- Morris Charts -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h2 class="page-header">Favorites</h2>
+                        <p class="lead">Anything I want to remember I'll put here.</p>
+                    </div>
+                </div>
+                <!-- /.row -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="panel panel-green">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Favorite Climbs</h3>
+                            </div>
+                            <div class="panel-body">
+                                <iframe height='405' width='590' frameborder='0' allowtransparency='true' scrolling='no' src='https://www.strava.com/activities/932006201/embed/d940f85ff7b665aec2411728b01dcd1fdf661256'></iframe>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- /.container-fluid -->
 
