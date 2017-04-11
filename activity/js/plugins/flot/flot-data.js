@@ -92,7 +92,7 @@ $(function() {
 
 // Flot Line Charts - Multiple Axes - With Data
 $(function() {
-
+//TODO: it doesn't make sense to make the same ajax call in both flot-data.js AND morris-data. Combine this with morris-data.js OR use some other API here instead
     $.ajax({
       type: "GET",
       url: "https://www.strava.com/api/v3/athlete/activities",
@@ -100,61 +100,6 @@ $(function() {
         xhr.setRequestHeader('Authorization', 'Bearer ' + "a1a5ce7129a73ebfd5d7ccf84db5a723444cc728");
       },
         success: function (data_strava) {
-            average_speed=[];distance=[];
-            data_strava.forEach(function(element) {
-                average_speed.push(  (({ start_date, average_speed }) => ([ Date.parse(start_date), average_speed ]))(element)  );
-                distance.push(  (({ start_date, distance }) => ([ Date.parse(start_date), distance ]))(element)  );
-            });
-
-
-            function toKm(v, axis) {
-                return v.toFixed(axis.tickDecimals)/1000 + "km";
-            }
-
-            function doPlot(position) {
-                $.plot($("#flot-multiple-axes-chart"), [{
-                    data: average_speed,
-                    label: "Average Speed (m/sec)"
-                }, {
-                    data: distance,
-                    label: "Average Distance",
-                    yaxis: 2
-                }], {
-                    xaxes: [{
-                        mode: 'time'
-                    }],
-                    yaxes: [{
-                        min: 0
-                    }, {
-                        // align if we are to the right
-                        alignTicksWithAxis: position == "right" ? 1 : null,
-                        position: position,
-                        tickFormatter: toKm
-                    }],
-                    legend: {
-                        position: 'sw'
-                    },
-                    grid: {
-                        hoverable: true //IMPORTANT! this is needed for tooltip to work
-                    },
-                    tooltip: true,
-                    tooltipOpts: {
-                        content: "%s on ride %x was %y",
-                        xDateFormat: "%y-%0m-%0d",
-
-                        onHover: function(flotItem, $tooltipEl) {
-                            // console.log(flotItem, $tooltipEl);
-                        }
-                    }
-
-                });
-            }
-
-            doPlot("right");
-
-            $("button").click(function() {
-                doPlot($(this).text());
-            });
         }
     });
 });

@@ -26,32 +26,14 @@ Start Bootstrap is based on the [Bootstrap](http://getbootstrap.com/) framework 
 Copyright 2013-2015 Iron Summit Media Strategies, LLC. Code released under the [Apache 2.0](https://github.com/IronSummitMedia/startbootstrap-sb-admin/blob/gh-pages/LICENSE) license.
 
 ## TODO:
-### in Dashboard
+### 
 
-* Area Chart - show progress on last ride
+* charts.html pie chart visualize # of cycling trips for commuting (<=5 mi), fun (<5 and <10 mi), workout (10>)
 
-* Task Panel -  show last activity  with links to ride details. use  https://www.strava.com/activities/:id  (for example: https://www.strava.com/activities/932006201)
+* move flot.js code in morris.js if using strava activity endpoint
 
-* Replace Transactions panel with rankings on starred segments:
+* put swimming stuff in bar chart
 
+* running stuff in the line chart
 
-list all starred segments
-``` 
- curl -G https://www.strava.com/api/v3/segments/starred \
-    -H "Authorization: Bearer a1a5ce7129a73ebfd5d7ccf84db5a723444cc728"
-```
-
-
-for each starred segment show my effort: distance, grade, ranking (use segment :id)
-``` 
-curl -G https://www.strava.com/api/v3/segment_efforts/:id \
-    -H "Authorization: Bearer a1a5ce7129a73ebfd5d7ccf84db5a723444cc728"
-``` 
-
-example
-```
-curl -G https://www.strava.com/api/v3/segment_efforts/22734738713 \
-    -H "Authorization: Bearer a1a5ce7129a73ebfd5d7ccf84db5a723444cc728"
-```
-
-
+* climbing stuff in "Tables"
