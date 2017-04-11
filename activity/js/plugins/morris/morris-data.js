@@ -31,8 +31,8 @@ $(function() {
             element: 'morris-area-chart',
             data: data,
             xkey: 'start_date',
-            ykeys: ['elev_high', 'elev_low', 'total_elevation_gain'],
-            labels: ['Elev. High (m)', 'Elev. Low (m)', 'total elevation gain (m)'],
+            ykeys: [ 'elev_low', 'elev_high','total_elevation_gain'],
+            labels: ['Elev. Low (m)', 'Elev. High (m)', 'total elevation gain (m)'],
             pointSize: 2,
             hideHover: 'auto',
             resize: true
