@@ -30,7 +30,7 @@ $(function() {
                             icon="fa fa-fw fa-circle";
 
                         else if(segment_details.segment.activity_type.toLowerCase()=="swim")
-                            icon="fa fa-fw fa-square";
+                            icon="fa fa-fw fa-tint";
 
                         var i = document.createElement("i");
                         i.className = icon;
@@ -84,7 +84,7 @@ $(function() {
 
             if (element.type.toLowerCase()=="swim")
             {
-                icon="fa fa-fw fa-square";
+                icon="fa fa-fw fa-tint";
                 swim_num=swim_num+1;
             }    
             if (news!=undefined)
