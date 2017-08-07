@@ -2,9 +2,12 @@
 <html lang="en">
 <script>
 
+var map;
+
 function initMap() {
-  var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 11,
+  map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 2,
+    mapTypeId: google.maps.MapTypeId.TERRAIN,
     styles: [
   {
     "elementType": "geometry",
@@ -159,16 +162,20 @@ function initMap() {
 ]
   });
 
-  var ctaLayer = new google.maps.KmlLayer({
-    url: 'http://carlynlee.github.io/flight/kml/N89084-dec8e36.kml',
-    map: map
-  });
-}
+  }
+
+initMap();
+
+var kmlUrl = 'http://carlynlee.github.io/flight/kml/N89084-dec8e36.kml';
+var kmlOptions = {
+  suppressInfoWindows: true,
+  preserveViewport: false,
+  map: map
+};
+var kmlLayer = new google.maps.KmlLayer(kmlUrl, kmlOptions);
+
 </script>
-<!-- Replace the value of the key parameter with your own API key. -->
-<script async defer
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByJQJUZtuBM2DRRPXyU1lpSb3XcIERzGM&callback=initMap">
-</script>
+
 <head>
 
     <meta charset="utf-8">
@@ -540,7 +547,7 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByJQJUZtuBM2DRRPXyU1lpSb3
                                 <h3 class="panel-title"><i class="fa fa-plane fa-fw"></i> Maps</h3>
                             </div>
                             <div class="panel-body">
-                                    <div id="map"></div>
+<div id="map" style="min-width: 800px; min-height: 660px"></div>
                             </div>
                         </div>
                     </div>
