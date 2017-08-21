@@ -321,26 +321,15 @@
 
         
                 <!-- /.row -->
-<!--
-curl -i -u carlynlee:6cb2c36bcde16c970f06ab06dba34820ebb00545 https://api.github.com/repos/carlynlee/carlynlee.github.io/contents/flight/kml
-
--->
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Map Data</h3>
+                                <h3 class="panel-title"><i class="fa fa-map-o"></i>Recent Flights (Select Data to Plot Path on Map)</h3>
                             </div>
                             <div class="panel-body">
                                 <div class="list-group">
-                                    <!--<a href="#" class="list-group-item">
-                                        <span class="badge">just now</span>
-                                        <i class="fa fa-fw fa-calendar"></i> Calendar updated
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">4 minutes ago</span>
-                                        <i class="fa fa-fw fa-comment"></i> Commented on a post
-                                    </a>
+                                    <!--
                                     <a href="#" class="list-group-item">
                                         <span class="badge">23 minutes ago</span>
                                         <i class="fa fa-fw fa-truck"></i> Order 392 shipped
@@ -357,30 +346,25 @@ curl -i -u carlynlee:6cb2c36bcde16c970f06ab06dba34820ebb00545 https://api.github
                                         <span class="badge">2 hours ago</span>
                                         <i class="fa fa-fw fa-check"></i> Completed task: "pick up dry cleaning"
                                     </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">yesterday</span>
-                                        <i class="fa fa-fw fa-globe"></i> Saved the world
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <span class="badge">two days ago</span>
-                                        <i class="fa fa-fw fa-check"></i> Completed task: "fix error on sales page"
-                                    </a>-->
+                                    -->
                                 </div>
-                                <!--div class="text-right">
-                                    <a href="#">View All Activity <i class="fa fa-arrow-circle-right"></i></a>
-                                </div-->
+                                <div class="text-right">
+                                    <a href="https://api.github.com/repos/carlynlee/carlynlee.github.io/contents/flight/kml" target="new">View All Activity (JSON) <i class="fa fa-arrow-circle-right"></i></a>
+                                </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="col-lg-4">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-plane fa-fw"></i> Maps</h3>
+                                <h3 class="panel-title"><i class="fa fa-plane fa-fw"></i> Map</h3>
                             </div>
                             <div class="panel-body">
+<h3 class="panel-title" id="kml_url"></h3>
 <div id="map" style="min-width: 75%; min-height: 660px"></div>
 
-
+                            
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?&sensor=false"></script>
 
@@ -548,7 +532,12 @@ function initMap() {
 
 initMap();
 
-var kmlUrl = 'http://carlynlee.github.io/flight/kml/N89084-dec8e36.kml';
+selectkml( 'N89084-e174cc7.kml');
+function selectkml(filename)
+{
+var kmlUrl ='http://carlynlee.github.io/flight/kml/'+filename;
+document.getElementById("kml_url").innerHTML ="<a href=\'"+kmlUrl+"\'>Download " +filename +"</a>";
+
 var kmlOptions = {
   suppressInfoWindows: true,
   preserveViewport: false,
@@ -556,11 +545,14 @@ var kmlOptions = {
 };
 var kmlLayer = new google.maps.KmlLayer(kmlUrl, kmlOptions);
 
+
+}
 </script>
 
                             </div>
                         </div>
                     </div>
+                    
                 </div>
                 <!-- /.row -->
 
