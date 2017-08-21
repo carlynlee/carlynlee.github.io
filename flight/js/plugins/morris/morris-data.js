@@ -2,6 +2,46 @@
 
 $(function() {
 
+    $.ajax({
+      type: "GET",
+      url: "https://api.github.com/repos/carlynlee/carlynlee.github.io/contents/flight/kml",
+      beforeSend: function (xhr, settings) {
+        xhr.setRequestHeader('Authorization', "Bearer 286e8bab70820fd9b07558a67ca2268c337ff0be");
+      },
+      success: function (aviation_stuff_kml) {
+
+
+        var news = document.getElementsByClassName("list-group")[0];
+
+
+        aviation_stuff_kml.forEach(function(element) {
+            var icon="fa fa-fw fa-map-o";
+             
+            if (news!=undefined)
+            {
+                var a = document.createElement('a');
+                a.href=element.download_url;
+                a.className="list-group-item";
+                a.target="new"
+                var span = document.createElement('span');
+                span.className="badge"
+                span.innerHTML=element.size + " bytes";
+                var i = document.createElement("i");
+                i.className = icon;
+                a.innerHTML = element.name + " ";
+                a.appendChild(span);
+                a.appendChild(i);
+                news.appendChild(a);
+
+            }
+
+
+        });
+    }
+});
+
+
+
     // Area Chart
     Morris.Area({
         element: 'morris-area-chart',
