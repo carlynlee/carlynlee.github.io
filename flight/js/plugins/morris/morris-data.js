@@ -6,7 +6,7 @@ $(function() {
       type: "GET",
       url: "https://api.github.com/repos/carlynlee/carlynlee.github.io/contents/flight/kml",
       beforeSend: function (xhr, settings) {
-        xhr.setRequestHeader('Authorization', "Bearer 286e8bab70820fd9b07558a67ca2268c337ff0be");
+        xhr.setRequestHeader('Authorization', "Bearer REDACTED_GITHUB_PAT");
       },
       success: function (aviation_stuff_kml) {
 
