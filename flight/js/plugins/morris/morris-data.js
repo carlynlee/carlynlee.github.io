@@ -14,28 +14,26 @@ $(function() {
         var news = document.getElementsByClassName("list-group")[0];
 
 
-        aviation_stuff_kml.forEach(function(element) {
-            var icon="fa fa-fw fa-map-o";
+        aviation_stuff_kml.some(function(element,idx) {
              
             if (news!=undefined)
             {
                 var a = document.createElement('a');
-                a.href=element.download_url;
+                a.href="javascript:selectkml(\'" + element.name +"\');";//element.download_url;
                 a.className="list-group-item";
-                a.target="new"
+                //a.target="new"
                 var span = document.createElement('span');
                 span.className="badge"
                 span.innerHTML=element.size + " bytes";
-                var i = document.createElement("i");
-                i.className = icon;
+                
                 a.innerHTML = element.name + " ";
                 a.appendChild(span);
-                a.appendChild(i);
                 news.appendChild(a);
 
             }
 
-
+            return idx===5;
+                
         });
     }
 });
