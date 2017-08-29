@@ -68,7 +68,7 @@ $(function() {
         var news = document.getElementsByClassName("list-group")[0];
 
 
-        data_strava.forEach(function(element) {
+        data_strava.some(function(element,el_i) {
             var icon="";
             if (element.type.toLowerCase()=="ride")
             {
@@ -104,6 +104,8 @@ $(function() {
                 news.appendChild(a);
 
             }
+            
+            return el_i ==15;
 
 
         });
