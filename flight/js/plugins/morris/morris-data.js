@@ -33,9 +33,9 @@ $(function() {
                 //a.target="new"
                 var span = document.createElement('span');
                 span.className="badge"
-                span.innerHTML=element.size + " bytes";
+                span.innerHTML=element.client_modified.split("T")[0];
                 
-                a.innerHTML = element.name + " ";
+                a.innerHTML = element.name.split(".")[0] + " ";
                 a.appendChild(span);
                 news.appendChild(a);
 
