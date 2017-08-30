@@ -3,10 +3,19 @@
 $(function() {
 
     $.ajax({
-      type: "GET",
-      url: "https://api.github.com/repos/carlynlee/carlynlee.github.io/contents/flight/kml",
+       /* Using the Github API assumes a directory 'flight/kml' */
+      //type: "GET",
+      //url: "https://api.github.com/repos/carlynlee/carlynlee.github.io/contents/flight/kml",
+      type: "POST",
+      url: "https://api.dropboxapi.com/2/files/list_folder",
+      data: "{\"path\":\"/kml\",\"recursive\": false,\"include_media_info\": false,\"include_deleted\": false,\"include_has_explicit_shared_members\": false,\"include_mounted_folders\": false}",
+      contentType:"application/json; charset=utf-8",
+      dataType:"json",
       beforeSend: function (xhr, settings) {
-        xhr.setRequestHeader('Authorization', "Bearer a23414b176c4556c5acdb5f0d5c92b8fb4471cf6");
+        //Github API public key
+       // xhr.setRequestHeader('Authorization', "Bearer a23414b176c4556c5acdb5f0d5c92b8fb4471cf6");
+       xhr.setRequestHeader('Authorization', "Bearer l1iPFklTrlAAAAAAAABMCUgkhupbYPsVpZhvEw9ja_4mP_szN6mdHcJHFIsLCnng");
+
       },
       success: function (aviation_stuff_kml) {
 
@@ -14,7 +23,7 @@ $(function() {
         var news = document.getElementsByClassName("list-group")[0];
 
 
-        aviation_stuff_kml.some(function(element,idx) {
+        aviation_stuff_kml.entries.some(function(element,idx) {
              
             if (news!=undefined)
             {
