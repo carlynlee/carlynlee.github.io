@@ -2,6 +2,66 @@
 <html lang="en">
 
 <head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-120791568-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-120791568-1');
+
+
+$.ajax({
+
+  // The 'type' property sets the HTTP method.
+  // A value of 'PUT' or 'DELETE' will trigger a preflight request.
+  type: 'GET',
+
+  // The URL to make the request to.
+  url: 'https://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&stationString=KEMT&hoursBeforeNow=12',
+
+  // The 'contentType' property sets the 'Content-Type' header.
+  // The JQuery default for this property is
+  // 'application/x-www-form-urlencoded; charset=UTF-8', which does not trigger
+  // a preflight. If you set this value to anything other than
+  // application/x-www-form-urlencoded, multipart/form-data, or text/plain,
+  // you will trigger a preflight request.
+  contentType: 'text/plain',
+
+  xhrFields: {
+    // The 'xhrFields' property sets additional fields on the XMLHttpRequest.
+    // This can be used to set the 'withCredentials' property.
+    // Set the value to 'true' if you'd like to pass cookies to the server.
+    // If this is enabled, your server must respond with the header
+    // 'Access-Control-Allow-Credentials: true'.
+    withCredentials: false
+  },
+
+  headers: {
+    // Set any custom headers here.
+    // If you set any non-simple headers, your server must include these
+    // headers in the 'Access-Control-Allow-Headers' response header.
+  },
+
+  success: function(data) {
+    console.log(data);
+    // Here's where you handle a successful response.
+  },
+
+  error: function() {
+    console.log('oops')
+    // Here's where you handle an error response.
+    // Note that if the error was due to a CORS issue,
+    // this function will still fire, but there won't be any additional
+    // information about the error.
+  }
+});
+
+
+
+</script>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -105,10 +165,10 @@
 
 
                         <h1 class="page-header">
-                            San Gabriel Valley Airport
+                           My Home Airport <a href="http://www.airnav.com/airport/KEMT">KEMT - San Gabriel Valley Airport</a>.
                         </h1>
 
-                        <p class="lead">Here's the scoop on my favorite airport, <a href="http://www.airnav.com/airport/KEMT">KEMT - San Gabriel Valley Airport</a>. VFR since that's what I'm working on now.</p>
+                        <p class="lead"> Don't actually use any of this for your preflight. It's just for funsies.</p>
                         <ol class="breadcrumb">
                             <li>
                                 <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
@@ -119,134 +179,13 @@
                         </ol>
                     </div>
                 </div>
+
                 <!-- /.row -->
 
                 <div class="row">
-                    <div class="col-lg-6">
-                        <h2>Weather at KEMT</h2>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Page</th>
-                                        <th>Visits</th>
-                                        <th>% New Visits</th>
-                                        <th>Revenue</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="active">
-                                        <td>/index.html</td>
-                                        <td>1265</td>
-                                        <td>32.3%</td>
-                                        <td>$321.33</td>
-                                    </tr>
-                                    <tr class="success">
-                                        <td>/about.html</td>
-                                        <td>261</td>
-                                        <td>33.3%</td>
-                                        <td>$234.12</td>
-                                    </tr>
-                                    <tr class="warning">
-                                        <td>/sales.html</td>
-                                        <td>665</td>
-                                        <td>21.3%</td>
-                                        <td>$16.34</td>
-                                    </tr>
-                                    <tr class="danger">
-                                        <td>/blog.html</td>
-                                        <td>9516</td>
-                                        <td>89.3%</td>
-                                        <td>$1644.43</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/404.html</td>
-                                        <td>23</td>
-                                        <td>34.3%</td>
-                                        <td>$23.52</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/services.html</td>
-                                        <td>421</td>
-                                        <td>60.3%</td>
-                                        <td>$724.32</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/blog/post.html</td>
-                                        <td>1233</td>
-                                        <td>93.2%</td>
-                                        <td>$126.34</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                    </div>
-                    <div class="col-lg-6">
-                        <h2>Bordered with Striped Rows</h2>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Page</th>
-                                        <th>Visits</th>
-                                        <th>% New Visits</th>
-                                        <th>Revenue</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>/index.html</td>
-                                        <td>1265</td>
-                                        <td>32.3%</td>
-                                        <td>$321.33</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/about.html</td>
-                                        <td>261</td>
-                                        <td>33.3%</td>
-                                        <td>$234.12</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/sales.html</td>
-                                        <td>665</td>
-                                        <td>21.3%</td>
-                                        <td>$16.34</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/blog.html</td>
-                                        <td>9516</td>
-                                        <td>89.3%</td>
-                                        <td>$1644.43</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/404.html</td>
-                                        <td>23</td>
-                                        <td>34.3%</td>
-                                        <td>$23.52</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/services.html</td>
-                                        <td>421</td>
-                                        <td>60.3%</td>
-                                        <td>$724.32</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/blog/post.html</td>
-                                        <td>1233</td>
-                                        <td>93.2%</td>
-                                        <td>$126.34</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.row -->
-
-                <div class="row">
-                    <div class="col-lg-6">
-                        <h2>Basic Table</h2>
+                    <div class="col-lg-12">
+                        <h2>Weather reports from <a href="https://aviationweather.gov/metar/data?ids=Kemt&format=raw&hours=12&taf=on&layout=on&date=0" target="new">aviationweather.gov</a></h2>
+                        <!--https://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&stationString=KEMT&hoursBeforeNow=12-->
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
@@ -305,70 +244,7 @@
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <h2>Striped Rows</h2>
-                        <div class="table-responsive">
-                            <table class="table table-hover table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Page</th>
-                                        <th>Visits</th>
-                                        <th>% New Visits</th>
-                                        <th>Revenue</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>/index.html</td>
-                                        <td>1265</td>
-                                        <td>32.3%</td>
-                                        <td>$321.33</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/about.html</td>
-                                        <td>261</td>
-                                        <td>33.3%</td>
-                                        <td>$234.12</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/sales.html</td>
-                                        <td>665</td>
-                                        <td>21.3%</td>
-                                        <td>$16.34</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/blog.html</td>
-                                        <td>9516</td>
-                                        <td>89.3%</td>
-                                        <td>$1644.43</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/404.html</td>
-                                        <td>23</td>
-                                        <td>34.3%</td>
-                                        <td>$23.52</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/services.html</td>
-                                        <td>421</td>
-                                        <td>60.3%</td>
-                                        <td>$724.32</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/blog/post.html</td>
-                                        <td>1233</td>
-                                        <td>93.2%</td>
-                                        <td>$126.34</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.row -->
-
-                <div class="row">
-                    <div class="col-lg-6">
-                        <h2>Charts</h2>
+                        <h2>VFR Charts</h2>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover">
                                 <thead>
@@ -389,26 +265,13 @@
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <h2> Runway Info </h2>
 
-                        <div>
-                            <table >
-                                <thead>
-                                    <tr>
-                                        <th> Runway 1/19  </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <TR><TD valign=top align=right>Dimensions:&nbsp;</TD><TD colspan=3 valign=top>3995 x 75 ft. / 1218 x 23 m</TD></TR>
-                                    <TR><TD valign=top></TD><TD valign=top><B>RUNWAY 1</B></TD><TD>&nbsp;&nbsp;</TD><TD valign=top><B>RUNWAY 19</B></TD></TR>
-                                   
-                                    <TR><TD nowrap align=right>Traffic pattern:&nbsp;</TD><TD>left</TD><TD></TD><TD>right</TD></TR>
-                                    <TR><TD nowrap valign=top align=right>Runway heading:&nbsp;</TD><TD valign=top>011 mag, 025 true</TD><TD></TD><TD valign=top>191 mag, 205 true</TD></TR>
-                               </tbody>
-                            </TABLE>
-                        </div>
+                        
                     </div>
                 </div>
+                <!-- /.row -->
+
+        
                 <!-- /.row -->
 
             </div>
