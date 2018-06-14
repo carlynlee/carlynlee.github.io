@@ -13,52 +13,23 @@
   gtag('config', 'UA-120791568-1');
 
 
+var xhr = new XMLHttpRequest();
+ var $table = $('#table');
+
 $.ajax({
+        url: 'https://myflightbook.com/logbook/public/oAuthToken.aspx/totals',
+        type: 'GET',
+        dataType:'jsonp',
+        jsonpCallback:'callback',
+        data: 'access_token=gAAAAFIH7NkALP3ITwgPmG1TlUzfhnQ8lwrjEc7R73gnedGvPDnBJxhe97W07Ehbo7Fow3pSKTxIQMnh07uLIAKb3uxL03tRFBsYpSI_wRrEfvDOZvjanGzgdgMpC0pQ5TusTgjPcOwZdm0dWSaDKc1SY-g-RS6wRIuCmdtuP7a6sJlqJAEAAIAAAAAWNlee-odC-PYIIk7QE6CfS9MhsaR28GOTBCZpb7QK63mI0HzXLfUv6nY9b03XhytY7VKFWYIhqC4xj4F1xaPAgmrrjGF5rEXgwJK_JY5Hk1OJhFDizD97Lh-idh3YK3He-psbUHBeXYgg6nEgQdVga-8m80AW0rzOjg2mP8gBzkQkPD7kVe0MjICCDoDhHO2roDeL_4h9YyyhN-M2mp2qFWAG-P_MslRw367lP-_GEKQyXOzvCPamh07Zzv7hnlwrasvtqH5Rxp8ahsaNuYsqNk4OfKtaKx4ewEffJw2rzS3enyyCRBaInM4LynsroFaeYRrb0CdbboVa6qtbDSowhqy5VJDbjYZBjXzFj7wpQ3hsDdOqUlGGALqo8vTDL3U&json=1', // or
+        success: function(json) {
+            console.log(json);
 
-  // The 'type' property sets the HTTP method.
-  // A value of 'PUT' or 'DELETE' will trigger a preflight request.
-  type: 'GET',
-
-  // The URL to make the request to.
-  url: 'https://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&stationString=KEMT&hoursBeforeNow=12',
-
-  // The 'contentType' property sets the 'Content-Type' header.
-  // The JQuery default for this property is
-  // 'application/x-www-form-urlencoded; charset=UTF-8', which does not trigger
-  // a preflight. If you set this value to anything other than
-  // application/x-www-form-urlencoded, multipart/form-data, or text/plain,
-  // you will trigger a preflight request.
-  contentType: 'text/plain',
-
-  xhrFields: {
-    // The 'xhrFields' property sets additional fields on the XMLHttpRequest.
-    // This can be used to set the 'withCredentials' property.
-    // Set the value to 'true' if you'd like to pass cookies to the server.
-    // If this is enabled, your server must respond with the header
-    // 'Access-Control-Allow-Credentials: true'.
-    withCredentials: false
-  },
-
-  headers: {
-    // Set any custom headers here.
-    // If you set any non-simple headers, your server must include these
-    // headers in the 'Access-Control-Allow-Headers' response header.
-  },
-
-  success: function(data) {
-    console.log(data);
-    // Here's where you handle a successful response.
-  },
-
-  error: function() {
-    console.log('oops')
-    // Here's where you handle an error response.
-    // Note that if the error was due to a CORS issue,
-    // this function will still fire, but there won't be any additional
-    // information about the error.
-  }
-});
-
+            $('#table').bootstrapTable({
+            data: json
+            });
+        },
+    });
 
 
 </script>
@@ -165,10 +136,10 @@ $.ajax({
 
 
                         <h1 class="page-header">
-                           My Home Airport <a href="http://www.airnav.com/airport/KEMT">KEMT - San Gabriel Valley Airport</a>.
+                           Airplane Stuff.
                         </h1>
 
-                        <p class="lead"> Don't actually use any of this for your preflight. It's just for funsies.</p>
+                        <p class="lead">My Home Airport <a href="http://www.airnav.com/airport/KEMT">KEMT - San Gabriel Valley Airport</a></p>
                         <ol class="breadcrumb">
                             <li>
                                 <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
@@ -184,62 +155,19 @@ $.ajax({
 
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2>Weather reports from <a href="https://aviationweather.gov/metar/data?ids=Kemt&format=raw&hours=12&taf=on&layout=on&date=0" target="new">aviationweather.gov</a></h2>
+                        <h2>I'm using the Developer API from <a href="http://myflightbook.com" target="new">myflightbook.com</a></h2>
                         <!--https://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&stationString=KEMT&hoursBeforeNow=12-->
+
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table id="table" class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Page</th>
-                                        <th>Visits</th>
-                                        <th>% New Visits</th>
-                                        <th>Revenue</th>
+                                        <th data-field="Description">Description</th>
+                                        <th data-field="Value">Hours</th>    
+                               
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>/index.html</td>
-                                        <td>1265</td>
-                                        <td>32.3%</td>
-                                        <td>$321.33</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/about.html</td>
-                                        <td>261</td>
-                                        <td>33.3%</td>
-                                        <td>$234.12</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/sales.html</td>
-                                        <td>665</td>
-                                        <td>21.3%</td>
-                                        <td>$16.34</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/blog.html</td>
-                                        <td>9516</td>
-                                        <td>89.3%</td>
-                                        <td>$1644.43</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/404.html</td>
-                                        <td>23</td>
-                                        <td>34.3%</td>
-                                        <td>$23.52</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/services.html</td>
-                                        <td>421</td>
-                                        <td>60.3%</td>
-                                        <td>$724.32</td>
-                                    </tr>
-                                    <tr>
-                                        <td>/blog/post.html</td>
-                                        <td>1233</td>
-                                        <td>93.2%</td>
-                                        <td>$126.34</td>
-                                    </tr>
-                                </tbody>
+                                
                             </table>
                         </div>
                     </div>
