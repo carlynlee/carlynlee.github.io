@@ -13,6 +13,9 @@
   gtag('config', 'UA-120791568-1');
 
 
+var xhr = new XMLHttpRequest();
+ var $table = $('#table');
+
 $.ajax({
         url: 'https://myflightbook.com/logbook/public/oAuthToken.aspx/totals',
         type: 'GET',
@@ -22,121 +25,11 @@ $.ajax({
         success: function(json) {
             console.log(json);
 
-
-            // EXTRACT VALUE FOR HTML HEADER. 
-            var col = [];
-            col.push("Description");
-            col.push("Value");
-         
-
-            // CREATE DYNAMIC TABLE.
-            var table = document.createElement("table");
-            table.setAttribute("class","table table-bordered table-hover")
-
-            // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
-            var tr = table.insertRow(-1);                   // TABLE ROW.
-
-            for (var i = 0; i < col.length; i++) {
-                var th = document.createElement("th");      // TABLE HEADER.
-                th.innerHTML = col[i];
-                tr.appendChild(th);
-            }
-
-            // ADD JSON DATA TO THE TABLE AS ROWS.
-            for (var i = 1; i < json.length; i++) {
-
-                tr = table.insertRow(-1);
-
-                for (var j = 0; j < col.length; j++) {
-                    var tabCell = tr.insertCell(-1);
-                    tabCell.innerHTML = json[i][col[j]];
-                }
-            }
-
-            // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
-            var divContainer = document.getElementById("showData");
-            divContainer.innerHTML = "";
-            divContainer.appendChild(table);
-
-            var divContainerSummary=document.getElementById("showDataSummary")
-            divContainerSummary.innerHTML =  "Currently I've logged " + json[0]["SubDescription"];
+            $('#table').bootstrapTable({
+            data: json
+            });
         },
     });
-
-
-
-    $.ajax({
-        url: 'https://myflightbook.com/logbook/public/oAuthToken.aspx/AircraftForUser',
-        type: 'GET',
-        dataType:'jsonp',
-        //jsonpCallback:'callback',
-        data: 'access_token=gAAAAB8HtQQbDh4jqQpzMu1nkxJcQjCPlhd_GQRM3nFxig-5E6hyoHtujvm_MDOb21X4msLt4Lu8R5nQ0fplfDha4n_oZUe_0f-3bh6qAMcLSevIa9UlY8xQ5XUxzvWyPRo-y5dUN0mngIuHKmgAJPcjsTCwF2wDu5T6jAw9FluiG612NAEAAIAAAAAIwU4Koh0dw9N-rEGI5XX8hvZwc_K2MqmCQRmAwZPNRO0JfTdZUGmHxa5jSPw2iatYUcRct1E0ko4uAx8Hoqq6KJo8eeS5w01owoT-fotBhdSaNyM_kKcZs1R8rEThF2D3bsGJXV2dyl5yukpH8c7rpwZrTePNgxIEdRmaHRQiWOigYrMUnE_-vmIZr7dAc7ewQ6aWZI_kF8VtQCWew9bSblWDXXh_jBJL0rIPTIGgN12FCKtBv_eQVLQjJI02fq1nmYZQRdf2HBBmqvEGoCEl57c7524WHKoz4vpSzFyeCMFMslEvmmcrM7vwst-I1HEmUafil3bochSX-HGyGvZrA6EhOdDai5Gc8A7hlFIpoaVgH77N-8ixAXkV3xyaadBSPCDFleDLuJ7LL2c8wBZT&json=1', // or
-        success: function(json_airplanes) {
-            console.log(json_airplanes);
-
-
-        // EXTRACT VALUE FOR HTML HEADER. 
-        var col = ["ModelCommonName","ModelDescription","TailNumber","AircraftImages"];
-        /*for (var i = 0; i < json_airplanes.length; i++) {
-            for (var key in json_airplanes[i]) {
-                if (col.indexOf(key) === -1) {
-                    col.push(key);
-                }
-            }
-        }*/
-            // CREATE DYNAMIC TABLE.
-            var table = document.createElement("table");
-            table.setAttribute("class","table  table-bordered table-hover")
-
-
-
-
-
-            // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
-
-            var tr = table.insertRow(-1);                   // TABLE ROW.
-
-            for (var i = 0; i < col.length; i++) {
-                var th = document.createElement("th");      // TABLE HEADER.
-                th.innerHTML = col[i];
-                tr.appendChild(th);
-            }
-
-            // ADD JSON DATA TO THE TABLE AS ROWS.
-            for (var i = 0; i < json_airplanes.length; i++) {
-
-                tr = table.insertRow(-1);
-
-                for (var j = 0; j < col.length; j++) {
-                    var tabCell = tr.insertCell(-1);
-                    if (col[j]=="AircraftImages")
-                    {
-                        tabCell.innerHTML="";
-                        for (var k=0;k<json_airplanes[i][col[j]].length; k++)
-                        {
-                            //example: https://s3.amazonaws.com/mfbimages/logbook/images/aircraft/id/44181/2018061800221045-2005742_.jpg
-                            var aircraft_image=json_airplanes[i][col[j]][k];
-                            var photo_url="https://s3.amazonaws.com/mfbimages" +aircraft_image.VirtualPath + aircraft_image.ThumbnailFile.replace("t_","");
-                            tabCell.innerHTML+="<a href=\""+photo_url+"\" target=\"new\">" + (k+1).toString() +"</a> ";
-
-                        } 
-                    }
-                    else
-                    {
-                        tabCell.innerHTML = json_airplanes[i][col[j]];
-                    }
-                }
-            }
-
-            // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
-            var divContainer = document.getElementById("airplanes");
-            divContainer.innerHTML = "";
-            divContainer.appendChild(table);
-        },
-    });
-    //Currency: https://myflightbook.com/logbook/public/oAuthToken.aspx/currency?access_token=gAAAAB8HtQQbDh4jqQpzMu1nkxJcQjCPlhd_GQRM3nFxig-5E6hyoHtujvm_MDOb21X4msLt4Lu8R5nQ0fplfDha4n_oZUe_0f-3bh6qAMcLSevIa9UlY8xQ5XUxzvWyPRo-y5dUN0mngIuHKmgAJPcjsTCwF2wDu5T6jAw9FluiG612NAEAAIAAAAAIwU4Koh0dw9N-rEGI5XX8hvZwc_K2MqmCQRmAwZPNRO0JfTdZUGmHxa5jSPw2iatYUcRct1E0ko4uAx8Hoqq6KJo8eeS5w01owoT-fotBhdSaNyM_kKcZs1R8rEThF2D3bsGJXV2dyl5yukpH8c7rpwZrTePNgxIEdRmaHRQiWOigYrMUnE_-vmIZr7dAc7ewQ6aWZI_kF8VtQCWew9bSblWDXXh_jBJL0rIPTIGgN12FCKtBv_eQVLQjJI02fq1nmYZQRdf2HBBmqvEGoCEl57c7524WHKoz4vpSzFyeCMFMslEvmmcrM7vwst-I1HEmUafil3bochSX-HGyGvZrA6EhOdDai5Gc8A7hlFIpoaVgH77N-8ixAXkV3xyaadBSPCDFleDLuJ7LL2c8wBZT&json=1&idFlight=0
-
-    //airports visited: https://myflightbook.com/logbook/public/oAuthToken.aspx/VisitedAirports?access_token=gAAAAB8HtQQbDh4jqQpzMu1nkxJcQjCPlhd_GQRM3nFxig-5E6hyoHtujvm_MDOb21X4msLt4Lu8R5nQ0fplfDha4n_oZUe_0f-3bh6qAMcLSevIa9UlY8xQ5XUxzvWyPRo-y5dUN0mngIuHKmgAJPcjsTCwF2wDu5T6jAw9FluiG612NAEAAIAAAAAIwU4Koh0dw9N-rEGI5XX8hvZwc_K2MqmCQRmAwZPNRO0JfTdZUGmHxa5jSPw2iatYUcRct1E0ko4uAx8Hoqq6KJo8eeS5w01owoT-fotBhdSaNyM_kKcZs1R8rEThF2D3bsGJXV2dyl5yukpH8c7rpwZrTePNgxIEdRmaHRQiWOigYrMUnE_-vmIZr7dAc7ewQ6aWZI_kF8VtQCWew9bSblWDXXh_jBJL0rIPTIGgN12FCKtBv_eQVLQjJI02fq1nmYZQRdf2HBBmqvEGoCEl57c7524WHKoz4vpSzFyeCMFMslEvmmcrM7vwst-I1HEmUafil3bochSX-HGyGvZrA6EhOdDai5Gc8A7hlFIpoaVgH77N-8ixAXkV3xyaadBSPCDFleDLuJ7LL2c8wBZT&json=1
 
 
 </script>
@@ -246,7 +139,7 @@ $.ajax({
                            Airplane Stuff.
                         </h1>
 
-                        <p class="lead">This is a digital collection of airplane stuff that I'm recording. I'm using the developer API from <a href="http://myflightbook.com" target="new">myflightbook.com</a>.</p>
+                        <p class="lead">This is just a digital collection of airplane stuff that I'm recording.</p>
                         <ol class="breadcrumb">
                             <li>
                                 <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
@@ -262,12 +155,21 @@ $.ajax({
 
                 <div class="row">
                     <div class="col-lg-12">
-                        <h2> <div id="showDataSummary"></h2>
-                
+                        <h2>I'm using the Developer API from <a href="http://myflightbook.com" target="new">myflightbook.com</a></h2>
+                        <!--https://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&stationString=KEMT&hoursBeforeNow=12-->
 
-                        <div id="showData" class="table-responsive col-lg-6"> </div>
-
-                        <div id="airplanes" class="col-lg-6">test </div>
+                        <div class="table-responsive">
+                            <table id="table" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th data-field="Description">Description</th>
+                                        <th data-field="Value">Hours</th>    
+                               
+                                    </tr>
+                                </thead>
+                                
+                            </table>
+                        </div>
                     </div>
                     <div class="col-lg-12">
                         <h2>My Home Airport <a href="http://www.airnav.com/airport/KEMT">KEMT - San Gabriel Valley Airport</h2>
@@ -298,7 +200,10 @@ $.ajax({
                             </table>
                         </div>
                     </div>
-                    
+                    <div class="col-lg-6">
+
+                        
+                    </div>
                 </div>
                 <!-- /.row -->
 
