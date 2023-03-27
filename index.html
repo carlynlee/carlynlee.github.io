@@ -154,7 +154,33 @@ google.maps.event.addDomListener(window, 'load', initialize);
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2>Stuff</h2>
-                    <p class="lead">and other things.</a>.</p>
+                    <p class="lead">This is a history of my work experience. Scroll through the timeline below to find a brief description of the project tasks I worked on. All this content is scraped from automated emails of Work Authorization Memorandum, and then annotated with my additional comments. Pardon the typos, etc. and any missing information. See my <a href="https://github.com/carlynlee/lee-carlyn_resume/blob/master/lee-carlyn_resume.pdf" target="new"> resume</a> for complete list of experience and publications.</p>
+
+
+
+                                <!-- 1 -->
+        <link title="timeline-styles" rel="stylesheet" 
+              href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+
+        <!-- 2 -->
+        <script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
+
+        <div id='timeline-embed' style="width: 100%; height: 600px"></div>
+
+        <!-- 3 -->
+        <script type="text/javascript">
+            // The TL.Timeline constructor takes at least two arguments:
+            // the id of the Timeline container (no '#'), and
+            // the URL to your JSON data file or Google spreadsheet.
+            // the id must refer to an element "above" this code,
+            // and the element must have CSS styling to give it width and height
+            // optionally, a third argument with configuration options can be passed.
+            // See below for more about options.
+            timeline = new TL.Timeline('timeline-embed',
+            'https://docs.google.com/spreadsheets/d/1bI-EnpEa2Mt6W0vKhT5l6s5RfGqoJlrWvd2K961A9kM/edit?usp=sharing');
+        </script>
+
+
                 </div>
             </div>
             <!-- /.row -->
@@ -203,9 +229,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
                                 <i class="fa fa-flask fa-stack-1x text-primary"></i>
                             </span>
                                 <h4>
-                                    <strong>Blog</strong>
+                                    <strong>Photography</strong>
                                 </h4>
-                                <p>Latest Thoughts.</p>
+                                <p>Film</p>
                                 <a href="https://itsosimpo.blogspot.com/" class="btn btn-light">More</a>
                             </div>
                         </div>
