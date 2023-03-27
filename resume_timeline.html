@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Random Geometries</title>
+    <style>
+      /* Define the styles for the canvas */
+      #canvas {
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+
+
+
+            <!-- 1 -->
+        <link title="timeline-styles" rel="stylesheet" 
+              href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+
+        <!-- 2 -->
+        <script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
+
+        <div id='timeline-embed' style="width: 100%; height: 600px"></div>
+
+        <!-- 3 -->
+        <script type="text/javascript">
+            // The TL.Timeline constructor takes at least two arguments:
+            // the id of the Timeline container (no '#'), and
+            // the URL to your JSON data file or Google spreadsheet.
+            // the id must refer to an element "above" this code,
+            // and the element must have CSS styling to give it width and height
+            // optionally, a third argument with configuration options can be passed.
+            // See below for more about options.
+            timeline = new TL.Timeline('timeline-embed',
+            'https://docs.google.com/spreadsheets/d/1bI-EnpEa2Mt6W0vKhT5l6s5RfGqoJlrWvd2K961A9kM/edit?usp=sharing');
+        </script>
+    <div id="canvas"></div>
+
+    <!-- Include Three.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+      // Create the scene, camera, and renderer
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.getElementById("canvas").appendChild(renderer.domElement);
+
+      // Create a random geometry and a material for it
+      const geometry = getRandomGeometry();
+      const material = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
+
+      // Create a mesh and add it to the scene
+      const mesh = new THREE.Mesh(geometry, material);
+      scene.add(mesh);
+
+      // Add some lights to the scene
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+      scene.add(ambientLight);
+
+      const pointLight = new THREE.PointLight(0xffffff, 0.5);
+      pointLight.position.set(10, 10, 10);
+      scene.add(pointLight);
+
+      // Set the camera position and look at the mesh
+      camera.position.set(0, 0, 5);
+      camera.lookAt(mesh.position);
+
+      // Add event listeners for zooming in and out
+      document.addEventListener("wheel", onZoom);
+
+      // Define the function for generating a random geometry
+      function getRandomGeometry() {
+        const shapes = ["box", "sphere", "torus", "cylinder"];
+        const shape = shapes[Math.floor(Math.random() * shapes.length)];
+        const size = Math.random() * 2 + 1;
+        switch (shape) {
+          case "box":
+            return new THREE.BoxGeometry(size, size, size);
+          case "sphere":
+            return new THREE.SphereGeometry(size, 32, 32);
+          case "torus":
+            return new THREE.TorusGeometry(size / 2, size / 4, 32, 64);
+          case "cylinder":
+            return new THREE.CylinderGeometry(size / 2, size / 2, size, 32);
+        }
+      }
+
+      // Define the function for zooming in and out
+      function onZoom(event) {
+        event.preventDefault();
+        const delta = event.deltaY * 0.1;
+        camera.position.z += delta;
+      }
+
+      // Animate the scene
+      function animate() {
+        requestAnimationFrame(animate);
+        mesh.rotation.x += 0.01;
+        mesh.rotation.y += 0.01;
+        renderer.render(scene, camera);
+      }
+
+      animate();
+    </script>
+
+
+  </body>
+</html>
