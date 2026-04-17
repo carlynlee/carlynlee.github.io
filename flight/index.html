@@ -283,9 +283,6 @@ function selectkml(filename)
       //dataType: 'application/octet-stream',
       data: JSON.stringify({"path": "/kml/"+filename}),
       beforeSend: function (xhr, settings) {
-        //Github API public key
-       // xhr.setRequestHeader('Authorization', "Bearer REDACTED_GITHUB_PAT");
-       xhr.setRequestHeader('Authorization', "Bearer REDACTED_DROPBOX_TOKEN");
        xhr.setRequestHeader('Content-Type',"application/json");
       },
       success: function (res) {

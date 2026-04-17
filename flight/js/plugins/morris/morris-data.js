@@ -12,9 +12,6 @@ $(function() {
       contentType:"application/json; charset=utf-8",
       dataType:"json",
       beforeSend: function (xhr, settings) {
-        //Github API public key
-       // xhr.setRequestHeader('Authorization', "Bearer REDACTED_GITHUB_PAT");
-       xhr.setRequestHeader('Authorization', "Bearer REDACTED_DROPBOX_TOKEN");
 
       },
       success: function (aviation_stuff_kml) {
