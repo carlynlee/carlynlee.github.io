@@ -2,15 +2,6 @@
 <html lang="en">
 
 <head>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-120791568-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-120791568-1');
-</script>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,76 +11,12 @@
 
     <title>Carlyn Lee</title>
     <style>
-      html, body, #map-canvas {
+      html, body {
         height: 100%;
         margin: 0;
         padding: 0;
       }
-
     </style>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
-    <script>
-
-
-    // This example creates circles on the map of varyig sizes
-    // First, create an object containing LatLng.
-    var citymap = {};
-    var cityCircle;
-
-function initialize() {
-
-
-
-//TODO, store the cities.json somewhere else. create a new repo for all data
-    $.ajax({
-        url: "https://raw.githubusercontent.com/carlynlee/carlynlee.github.io/master/data/cities.json", 
-        async: false,
-        dataType: 'json',
-        success: function(data) {
-            console.log(data); // this will show the info it in firebug console
-
-            $.each( data.cities, function( index, value ){
-                   citymap[ value[0] ] ={
-                        center: new google.maps.LatLng( value[1],value[2]),
-                        circle: value[3]
-
-                   };
-
-                });
-        }
-
-    });
-  // Create the map.
-  var mapOptions = {
-    zoom: 2,
-    center: new google.maps.LatLng(37.09024, -95.712891),
-    mapTypeId: google.maps.MapTypeId.TERRAIN
-  };
-
-  var map = new google.maps.Map(document.getElementById('map-canvas'),
-      mapOptions);
-
-  // Construct the circle for each value in citymap.
-  // Note: We scale the area of the circle based on the circle.
-  for (var city in citymap) {
-    var circleOptions = {
-      strokeColor: '#0000FF',
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: '#0000FF',
-      fillOpacity: 0.35,
-      map: map,
-      center: citymap[city].center,
-      radius: Math.sqrt(citymap[city].circle) * 100
-    };
-    // Add the circle for this city to the map.
-    cityCircle = new google.maps.Circle(circleOptions);
-  }
-}
-
-google.maps.event.addDomListener(window, 'load', initialize);
-
-    </script>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -99,7 +26,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -130,10 +57,10 @@ google.maps.event.addDomListener(window, 'load', initialize);
                 <a href="#services" onclick = $("#menu-close").click(); >Stuff</a>
             </li>
             <li>
-                <a href="#portfolio" onclick = $("#menu-close").click(); >What's New</a>
+                <a href="#contact" onclick = $("#menu-close").click(); >Contact</a>
             </li>
             <li>
-                <a href="#contact" onclick = $("#menu-close").click(); >Contact</a>
+                <a href="#demo" onclick = $("#menu-close").click(); >Swarm Demo</a>
             </li>
         </ul>
     </nav>
@@ -142,9 +69,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
     <header id="top" class="header">
         <div class="text-vertical-center">
             <h1>Carlyn Lee</h1>
-            <h3>Travel, Code, &amp; Other Fun Things</h3>
+            <h3>Software engineer for spacecraft, autonomous swarms, and the networks between them.</h3>
             <br>
-            <a href="#about" class="btn btn-dark btn-lg">Click Me!</a>
+            <a href="#about" class="btn btn-dark btn-lg">See My Work</a>
         </div>
     </header>
 
@@ -154,7 +81,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2>Stuff</h2>
-                    <p class="lead">This is a history of my work experience. Scroll through the timeline below to find a brief description of the project tasks I worked on. All this content is scraped from automated emails of Work Authorization Memorandum, and then annotated with my additional comments. Pardon the typos, etc. and any missing information. See my <a href="https://github.com/carlynlee/lee-carlyn_resume/blob/master/lee-carlyn_resume.pdf" target="new"> resume</a> for complete list of experience and publications.</p>
+                    <p class="lead">I've had a really exciting career as a software engineer in the aerospace industry. I'm using this space to chronicle the things I've gotten to explore and learn, and as a playground for trying out new ideas. See my <a href="https://github.com/carlynlee/lee-carlyn_resume/blob/master/lee-carlyn_resume.pdf" target="new"> resume</a> for complete list of experience and publications.</p>
 
 
 
@@ -201,38 +128,39 @@ google.maps.event.addDomListener(window, 'load', initialize);
                             <div class="service-item">
                                 <span class="fa-stack fa-4x">
                                 <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-cloud fa-stack-1x text-primary"></i>
+                                <i class="fa fa-plane fa-stack-1x text-primary"></i>
                             </span>
                                 <h4>
-                                    <strong>Flying Stuff</strong>
+                                    <strong>Flight Log</strong>
                                 </h4>
-                                <p>Data collected from little airplanes.</p>
-                                <a href="flight/index.html" class="btn btn-light">More</a>
+                                <p>I'm a private pilot. Replay my flights over Southern California, from the San Gabriel Valley up the coast to Santa Barbara, on a 3D globe.</p>
+                                <a href="flight/" class="btn btn-light">Fly along</a>
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6">
                             <div class="service-item">
                                 <span class="fa-stack fa-4x">
                                 <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-compass fa-stack-1x text-primary"></i>
+                                <i class="fa fa-book fa-stack-1x text-primary"></i>
                             </span>
                                 <h4>
-                                    <strong>Consulting</strong>
-                                </h4>Services in image and signal processing.</p>
-                                <a href="activity/index.html" class="btn btn-light" >More</a>
+                                    <strong>Publications</strong>
+                                </h4>
+                                <p>Papers on deep space communications, autonomous robotics, and space system analysis.</p>
+                                <a href="publications/" class="btn btn-light">Read</a>
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6">
                             <div class="service-item">
                                 <span class="fa-stack fa-4x">
                                 <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-flask fa-stack-1x text-primary"></i>
+                                <i class="fa fa-paint-brush fa-stack-1x text-primary"></i>
                             </span>
                                 <h4>
-                                    <strong>Photography</strong>
+                                    <strong>Side Quests</strong>
                                 </h4>
-                                <p>Film</p>
-                                <a href="https://itsosimpo.blogspot.com/" class="btn btn-light">More</a>
+                                <p>Film photography, prints, and the other creative outlets I enjoy.</p>
+                                <a href="https://itsosimpo.blogspot.com/" class="btn btn-light">Take a look</a>
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6">
@@ -265,87 +193,36 @@ google.maps.event.addDomListener(window, 'load', initialize);
         </div>
     </aside>
 
-    <!-- Portfolio -->
-    <section id="portfolio" class="portfolio">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-10 col-lg-offset-1 text-center">
-                <!--
-                    <h2>What's New?</h2>
-                    <hr class="small">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="portfolio-item">
-                                <a href="http://alpine.caltech.edu/" target="new" >
-                                    <img class="img-portfolio img-responsive" src="img/portfolio-1.jpg">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="portfolio-item">
-                                <a href="http://www.jpl.nasa.gov" target="new">
-                                    <img class="img-portfolio img-responsive" src="img/portfolio-2.jpg">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="portfolio-item">
-                                <a href="http://www.bikesgv.org/" target="new">
-                                    <img class="img-portfolio img-responsive" src="img/portfolio-3.jpg">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="portfolio-item">
-                                <a href="http://vcsgv.org/" target="new">
-                                    <img class="img-portfolio img-responsive" src="img/portfolio-4.jpg">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                -->
-                    <!-- /.row (nested) -->
-                <!--
-                    <a href="#" class="btn btn-dark">View More Items</a>
-                -->
-                </div>
-                <!-- /.col-lg-10 -->
-            </div>
-            <!-- /.row -->
-        </div>
-        <!-- /.container -->
-    </section>
-
     <!-- Call to Action -->
     <aside class="call-to-action bg-primary">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h3>Google maps API coverage map of explored regions. </h3>
-                    <!--a href="https://raw.githubusercontent.com/carlynlee/carlynlee.github.io/master/data/cities.json" class="btn btn-lg btn-light" >View List</a-->
-                    <!--a href="#" class="btn btn-lg btn-dark">Format</a-->
+                    <h3>Swarm Command Demo</h3>
+                    <p>A toy model of mesh-relayed command and control (C2), inspired by my field work on autonomous maritime swarms, delay-tolerant networking, and comms for the DARPA Subterranean Challenge. It brings together the pieces of a multi-vehicle autonomy system: an operator's C2 node, a degraded radio mesh, and vessels that keep operating on their own when communication links drop out.</p>
+                    <p>From the dashboard you can send orders, jam the radios, or go radio-silent (EMCON). Orders are versioned and relayed hop by hop, every vessel acknowledges back to C2, and the page tracks two operational metrics: time to command (from click until every vessel has confirmed) and time to formation (from click until every vessel is on station).</p>
+                    <p>It runs entirely in the browser on a Three.js scene graph, with a custom GPU shader for the ocean and instanced rendering for the radio traffic. Notes inside the demo walk through the architecture, from the command layer to shaders and GPU buffers.</p>
+                    <a href="swarm/" class="btn btn-lg btn-light">Open full screen</a>
                 </div>
             </div>
         </div>
     </aside>
 
-    <!-- Map -->
-
-    <section id="contact" class="map">
-    <div id="map-canvas"></div>
-
+    <!-- Swarm demo -->
+    <section id="demo" class="demo-embed">
+        <iframe src="swarm/?embed" title="Swarm Command Demo" loading="lazy"></iframe>
     </section>
 
     <!-- Footer -->
-    <footer>
+    <footer id="contact">
         <div class="container">
             <div class="row">
                 <div class="col-lg-10 col-lg-offset-1 text-center">
                     <h4><strong>Carlyn Lee</strong>
                     </h4>
-                    <p>Duarte, CA 91010</p>
+                    <p>Los Angeles, CA </p>
                     <ul class="list-unstyled">
-                        <li><i class="fa fa-phone fa-fw"></i> (626) 275-8902</li>
+                        <li><i class="fa fa-phone fa-fw"></i> (213) 433-7615</li>
                         <li><i class="fa fa-envelope-o fa-fw"></i>  <a href="mailto:carlyn.lee@gmail.com">me@carlyn</a>
                         </li>
                     </ul>

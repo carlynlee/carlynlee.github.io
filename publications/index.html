@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carlyn Lee Publications</title>
+<meta name="description" content="Publications by Carlyn Lee on deep space communications, autonomous robotics, and space system analysis.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect x='3' y='2' width='10' height='12' rx='1' fill='%234cc2ff'/></svg>">
+<style>
+  :root {
+    --bg: #fbfcfd;
+    --text: #1b2733;
+    --muted: #5b6b7b;
+    --line: #dde4ea;
+    --accent: #0d6fa8;
+    --tag: #eef4f8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0a1017; --text: #d8e3ee; --muted: #8296ab; --line: #22344a; --accent: #4cc2ff; --tag: #142233;
+    }
+  }
+  :root[data-theme="dark"] { --bg: #0a1017; --text: #d8e3ee; --muted: #8296ab; --line: #22344a; --accent: #4cc2ff; --tag: #142233; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 48px 16px 64px; }
+  a { color: var(--accent); }
+  .back { font-size: 14px; text-decoration: none; }
+  h1 { font-size: 30px; margin: 16px 0 6px; letter-spacing: -.01em; }
+  .intro { color: var(--muted); margin: 0 0 8px; }
+  ol { list-style: none; margin: 24px 0 0; padding: 0; border-top: 1px solid var(--line); }
+  li { padding: 16px 0; border-bottom: 1px solid var(--line); }
+  li:last-child { border-bottom: 0; }
+  .title { font-weight: 600; font-size: 17px; }
+  .title a { text-decoration: none; }
+  .title a:hover { text-decoration: underline; }
+  .authors { font-size: 14px; margin-top: 2px; }
+  .venue { font-size: 14px; color: var(--muted); font-style: italic; }
+  .about { font-size: 15px; margin: 6px 0 0; }
+  .year { float: right; font: 600 13px ui-monospace, Menlo, monospace; color: var(--muted); margin-left: 12px; }
+  footer { margin-top: 40px; font-size: 14px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="../">← carlynlee.github.io</a>
+  <h1>Publications</h1>
+  <p class="intro">Papers from my work at NASA's Jet Propulsion Laboratory and with collaborators, on deep space communications, autonomous robotics, and space system analysis. Links go to the
+    publisher or an open copy where one is available.</p>
+
+  <ol>
+    <li>
+      <span class="year">2026</span>
+      <div class="title">Measured WAN Traffic Reduction from Federated Edge AI in a Distributed Cosmic-Ray Sensor Network</div>
+      <div class="authors"><b>C. Lee</b>, H. Newman, Y. Wu, S. Axani</div>
+      <div class="venue">INDIS 2026 workshop, SC26 Supercomputing Conference, Chicago, IL (to appear)</div>
+      <p class="about">Smartphones acting as cosmic-ray detectors train a classifier in the browser and share only model
+        weights instead of raw detections. At matched accuracy, federated training moved 3.2–11.4× less wide-area
+        network traffic than centralizing the data.</p>
+    </li>
+    <li>
+      <span class="year">2025</span>
+      <div class="title"><a href="https://sc25.supercomputing.org/wp-content/uploads/2025/11/nre127s3.pdf">Onboard AI and Federated Learning for Cosmic Ray Event Detection</a></div>
+      <div class="authors"><b>C. Lee</b></div>
+      <div class="venue">Network Research Exhibition demonstration, SC25 Supercomputing Conference, St. Louis, MO</div>
+      <p class="about">Detecting cosmic ray events with machine learning onboard, training a shared model across distributed
+        nodes with federated learning.</p>
+    </li>
+    <li>
+      <span class="year">2025</span>
+      <div class="title"><a href="https://doi.org/10.1109/AERO63441.2025.11068506">High Data Rates from the Outer Solar System</a></div>
+      <div class="authors">K. Cheung, V. Vilnrotter, M. Sanchez-Net, <b>C. Lee</b></div>
+      <div class="venue">IEEE Aerospace Conference, Big Sky, MT</div>
+      <p class="about">How the Deep Space Network could support much higher data rates for future missions to the
+        outer planets.</p>
+    </li>
+    <li>
+      <span class="year">2022</span>
+      <div class="title"><a href="https://doi.org/10.55417/fr.2022047">NeBula: TEAM CoSTAR's Robotic Autonomy Solution that Won Phase II of DARPA Subterranean Challenge</a></div>
+      <div class="authors">A. Agha et al. (72 authors), including <b>C. Lee</b></div>
+      <div class="venue">Field Robotics, vol. 2, pp. 1432–1506 · <a href="https://arxiv.org/abs/2103.11470">arXiv preprint</a></div>
+      <p class="about">Team CoSTAR's autonomy architecture for robots exploring GPS- and comms-denied caves, mines
+        and tunnels, which took first place at the DARPA SubT Urban Circuit.</p>
+    </li>
+    <li>
+      <span class="year">2022</span>
+      <div class="title"><a href="https://doi.org/10.55417/fr.2022029">Swarms of Pirates: Red Team Exercises Using Autonomous High-Speed Maneuvering Surface Vessels</a></div>
+      <div class="authors">J. Vander Hook, W. Seto, V. Nguyen, Z. Hasnain, <b>C. Lee</b>, L. Gallagher, T. Halpin-Chan, V. Varahamurthy, M. Angulo</div>
+      <div class="venue">Field Robotics, vol. 2, pp. 872–909</div>
+      <p class="about">Autonomous high-speed surface vessels used as a coordinated red-team swarm in Navy exercises:
+        the largest fleet of autonomous maritime vehicles operated at the time.</p>
+    </li>
+    <li>
+      <span class="year">2021</span>
+      <div class="title"><a href="https://doi.org/10.2514/6.2021-4039">Lunar Terrain Coverage Analysis Data Delivery Workflow</a></div>
+      <div class="authors"><b>C. Lee</b>, M. Shaikh, C.H. Lee, D. Michels</div>
+      <div class="venue">AIAA ASCEND 2021 (AIAA 2021-4039)</div>
+      <p class="about">A workflow for computing and delivering 10&nbsp;m-resolution lunar communication coverage maps from
+        terrain masks generated on a supercomputer.</p>
+    </li>
+    <li>
+      <span class="year">2020</span>
+      <div class="title"><a href="https://doi.org/10.2514/6.2020-4006">In Silico Methods for Space System Analysis: Optical Link Coding Performance and Lunar Terrain Masks</a></div>
+      <div class="authors"><b>C. Lee</b>, H. Xie, C.H. Lee, D. Lyakhov, D. Michels</div>
+      <div class="venue">AIAA ASCEND 2020</div>
+      <p class="about">Using KAUST's Shaheen II supercomputer for parallel simulations of deep space optical link coding
+        and for computing lunar terrain masks.</p>
+    </li>
+    <li>
+      <span class="year">2018</span>
+      <div class="title"><a href="https://doi.org/10.2514/6.2018-2528">Recommendations Emerging from an Analysis of NASA's Deep Space Communications Capacity</a></div>
+      <div class="authors">D. Abraham, B. MacNeal, D. Heckman, Y. Chen, J. Wu, K. Tran, A. Kwok, <b>C. Lee</b></div>
+      <div class="venue">SpaceOps 2018, Marseille, France</div>
+      <p class="about">An analysis of demand on the Deep Space Network's capacity, and the recommendations that came out of it.</p>
+    </li>
+    <li>
+      <span class="year">2018</span>
+      <div class="title"><a href="https://doi.org/10.2514/6.2018-2579">Complexity-Based Link Assignment for NASA's Deep Space Network for Follow-the-Sun Operations</a></div>
+      <div class="authors">J. Lad, M. Johnston, D. Tran, D. Brown, K. Roffo, <b>C. Lee</b></div>
+      <div class="venue">SpaceOps 2018, Marseille, France</div>
+      <p class="about">Scoring the complexity of each spacecraft link so the three DSN complexes can run the whole network
+        during their local day shifts instead of around the clock.</p>
+    </li>
+    <li>
+      <span class="year">2017</span>
+      <div class="title"><a href="https://ai.jpl.nasa.gov/public/papers/pinover-iwpss2017-optimizing.pdf">Optimizing SmallSat Scheduling for NASA's Deep Space Network</a></div>
+      <div class="authors">K. Pinover, M. Johnston, <b>C. Lee</b></div>
+      <div class="venue">International Workshop on Planning and Scheduling for Space (IWPSS), Pittsburgh, PA</div>
+      <p class="about">Fitting a growing number of small spacecraft into the Deep Space Network's schedule.</p>
+    </li>
+    <li>
+      <span class="year">2017</span>
+      <div class="title"><a href="https://ipnpr.jpl.nasa.gov/progress_report/42-208/208B.pdf">Cassini Downlink Ka-Band Carrier Signal Analysis</a></div>
+      <div class="authors">D. Morabito, D. Kahan, K. Oudrhiri, <b>C. Lee</b></div>
+      <div class="venue">The Interplanetary Network Progress Report, vol. 42-208</div>
+      <p class="about">Atmospheric effects on 32&nbsp;GHz radio links, from more than ten years of Cassini signals recorded by
+        Deep Space Network receivers.</p>
+    </li>
+    <li>
+      <span class="year">2016</span>
+      <div class="title"><a href="https://doi.org/10.2514/6.2016-2523">Traffic Modeling for Deep Space Network in the Human Exploration Era</a></div>
+      <div class="authors">K. Cheung, D. Abraham, M. Sanchez-Net, K. Tran, <b>C. Lee</b></div>
+      <div class="venue">SpaceOps 2016, Daejeon, Korea</div>
+      <p class="about">Modeling communications traffic and bandwidth needs for human missions to the Moon and Mars.</p>
+    </li>
+    <li>
+      <span class="year">2014</span>
+      <div class="title"><a href="https://doi.org/10.2514/6.2014-1601">Integrating Space Communication Network Capabilities via Web Portal Technologies</a></div>
+      <div class="authors">M. Johnston, B. Carruth, M. Wallace, A. Coffman, <b>C. Lee</b>, C. Lau, K. Cheung, M. Levesque</div>
+      <div class="venue">SpaceOps 2014, Pasadena, CA</div>
+      <p class="about">Bringing space communication network planning and analysis tools together behind a single web portal.</p>
+    </li>
+    <li>
+      <span class="year">2013</span>
+      <div class="title"><a href="https://doi.org/10.1109/ICCSA.2013.16">Cancer Screening Using Multi-modal Differential Principal Orthogonal Decomposition</a></div>
+      <div class="authors"><b>C. Lee</b>, C.H. Lee</div>
+      <div class="venue">International Conference on Computational Science and Its Applications (ICCSA), Ho Chi Minh City, Vietnam, pp. 39–45</div>
+    </li>
+    <li>
+      <span class="year">2012</span>
+      <div class="title"><a href="https://doi.org/10.7763/IJBBB.2012.V2.87">Extended Principal Orthogonal Decomposition Method for Cancer Screening</a></div>
+      <div class="authors"><b>C. Lee</b>, C.H. Lee</div>
+      <div class="venue">International Journal of Bioscience, Biochemistry and Bioinformatics, vol. 2, no. 2, pp. 136–141</div>
+    </li>
+    <li>
+      <span class="year">2011</span>
+      <div class="title">REST Architecture for Link Analysis Tools Portal</div>
+      <div class="authors"><b>C. Lee</b></div>
+      <div class="venue">NASA Undergraduate Student Research Program (USRP), Pasadena, CA</div>
+    </li>
+  </ol>
+
+  <footer>Full experience is on my <a href="https://github.com/carlynlee/lee-carlyn_resume/blob/master/lee-carlyn_resume.pdf">resume</a>.</footer>
+</main>
+</body>
+</html>

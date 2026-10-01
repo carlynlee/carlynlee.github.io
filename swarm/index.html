@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Swarm Command Demo</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%234cc2ff'/></svg>">
+<meta name="description" content="Interactive toy model of mesh-relayed command and control for a swarm of autonomous surface vessels, with jamming, EMCON, and time-to-command metrics.">
+<style>
+  :root {
+    --bg: #0a1017;
+    --panel: rgba(12, 20, 30, 0.9);
+    --line: #22344a;
+    --text: #d8e3ee;
+    --muted: #8296ab;
+    --accent: #4cc2ff;
+    --ok: #5ad19a;
+    --warn: #ffb547;
+    --bad: #ff6b6b;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--text);
+    font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  #scene { position: fixed; inset: 0; }
+  #scene canvas { display: block; touch-action: none; }
+
+  .panel { position: fixed; top: 16px; left: 16px; width: 320px; max-height: calc(100% - 32px); overflow-y: auto;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px;
+    backdrop-filter: blur(6px); }
+  .panel h1 { font-size: 16px; margin: 0 0 2px; letter-spacing: .02em; }
+  .panel .sub { color: var(--muted); font-size: 12px; margin: 0 0 12px; }
+  .panel h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 14px 0 6px; font-weight: 600; }
+  .row { display: flex; gap: 6px; flex-wrap: wrap; }
+  button { font: inherit; color: var(--text); background: #142233; border: 1px solid var(--line); border-radius: 6px;
+    padding: 6px 10px; cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  button[aria-pressed="true"] { background: #17405c; border-color: var(--accent); color: #fff; }
+  .toggle { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 6px 0; }
+  .toggle label { cursor: pointer; }
+  input[type=range] { width: 100%; accent-color: var(--warn); }
+  input[type=checkbox] { accent-color: var(--warn); width: 16px; height: 16px; }
+
+  .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .metric { background: #0f1a27; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+  .metric .k { font-size: 11px; color: var(--muted); }
+  .metric .v { font: 600 20px/1.2 var(--mono); }
+  .metric .v.small { font-size: 13px; padding-top: 4px; }
+  .comms { font: 12px var(--mono); color: var(--muted); margin-top: 6px; }
+
+  .fleet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .chip { font: 11px var(--mono); padding: 5px 6px; border-radius: 6px; border: 1px solid var(--line); background: #0f1a27; }
+  .chip b { display: flex; justify-content: space-between; font-size: 12px; color: var(--text); }
+  .chip b i { font-style: normal; color: var(--muted); font-weight: 400; }
+  .chip.pending { border-color: var(--bad); color: var(--bad); }
+  .chip.rx { border-color: var(--warn); color: var(--warn); }
+  .chip.acked { border-color: var(--ok); color: var(--ok); }
+
+  .legend { font-size: 12px; color: var(--muted); display: grid; gap: 3px; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  details { margin-top: 12px; font-size: 12px; color: var(--muted); }
+  details summary { cursor: pointer; color: var(--text); }
+  a { color: var(--accent); }
+
+  .label { font: 600 11px var(--mono); color: var(--text); background: rgba(10,16,23,.75); padding: 1px 5px;
+    border-radius: 4px; border-left: 3px solid var(--bad); white-space: nowrap; pointer-events: none; }
+  .label.rx { border-left-color: var(--warn); }
+  .label.acked { border-left-color: var(--ok); }
+  .label.c2 { border-left-color: var(--accent); }
+
+  #hint { position: fixed; bottom: 16px; right: 16px; font-size: 12px; color: var(--muted);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
+  #collapse { display: none; }
+  #hint button { padding: 2px 8px; margin-left: 6px; font-size: 12px; }
+  #hint a { margin-left: 6px; }
+
+  @media (max-width: 640px) {
+    .panel { top: auto; bottom: 0; left: 0; right: 0; width: auto; max-height: 48%; border-radius: 12px 12px 0 0;
+      padding: 10px 16px 14px; }
+    .panel.collapsed > :not(header) { display: none; }
+    #collapse { display: inline-block; padding: 2px 8px; }
+    #hint { top: 12px; bottom: auto; right: 12px; left: 12px; text-align: center; }
+    body.embed #hint { right: 64px; } /* clear the homepage's menu button */
+  }
+</style>
+</head>
+<body>
+<div id="scene"></div>
+
+<aside class="panel" id="panel">
+  <header style="display:flex;justify-content:space-between;align-items:start;gap:8px">
+    <div>
+      <h1>Swarm Command Demo</h1>
+      <p class="sub">Mesh-relayed C2 for 6 autonomous surface vessels</p>
+    </div>
+    <button id="collapse" aria-label="Toggle panel">▾</button>
+  </header>
+
+  <h2>Formation</h2>
+  <div class="row" id="formations">
+    <button data-f="wedge" aria-pressed="true">Wedge</button>
+    <button data-f="line" aria-pressed="false">Line</button>
+    <button data-f="column" aria-pressed="false">Column</button>
+    <button data-f="circle" aria-pressed="false">Circle</button>
+  </div>
+
+  <h2>Environment</h2>
+  <div class="toggle">
+    <label for="jam">Jamming</label>
+    <span id="jamVal" style="font-family:var(--mono)">0%</span>
+  </div>
+  <input id="jam" type="range" min="0" max="100" value="0">
+  <div class="toggle">
+    <label for="emcon">EMCON (vehicles radio-silent)</label>
+    <input id="emcon" type="checkbox">
+  </div>
+  <div class="toggle">
+    <label for="relay">Auto relay chain</label>
+    <input id="relay" type="checkbox" checked>
+  </div>
+  <div class="comms" id="comms"></div>
+
+  <h2>Last command</h2>
+  <div class="metrics">
+    <div class="metric"><div class="k">Time-to-command</div><div class="v" id="ttc">—</div></div>
+    <div class="metric"><div class="k">Time-to-formation</div><div class="v" id="ttf">—</div></div>
+  </div>
+
+  <h2>Fleet</h2>
+  <div class="fleet" id="fleet"></div>
+
+  <h2>Legend</h2>
+  <div class="legend">
+    <div><span class="dot" style="background:var(--accent)"></span>Command packet</div>
+    <div><span class="dot" style="background:var(--ok)"></span>Acknowledgement</div>
+    <div><span class="dot" style="background:var(--bad)"></span>Lost packet / not yet received</div>
+    <div><span class="dot" style="background:var(--warn)"></span>Received, ack not confirmed</div>
+    <div><span style="display:inline-block;width:15px;color:var(--text)">⇄</span>Acting as comms relay</div>
+  </div>
+
+  <details>
+    <summary>What am I looking at?</summary>
+    <p>A toy model of command and control for a swarm of autonomous surface vessels. Commands leave the
+      C2 node and hop vessel-to-vessel across a radio mesh, each hop adding latency and risk of loss.
+      <b>Time-to-command</b> runs from your click until C2 holds acknowledgements from every vessel;
+      <b>time-to-formation</b> runs until every vessel is on station.</p>
+    <p>With <b>auto relay chain</b> on, vessels detach to bridge the gap back to C2 whenever the
+      destination is out of radio range, and the chain re-forms on its own as jamming changes.</p>
+    <p>Jamming shrinks radio range and raises loss. Under EMCON the vessels stop transmitting: no relays,
+      no acks. Out-of-range vessels keep executing their last known orders, and C2 can't confirm anything.</p>
+    <p>Inspired by field work on autonomous maritime swarms with NAVAIR and comms for DARPA SubT.
+      <a href="../" target="_top">Back to carlynlee.github.io</a></p>
+  </details>
+
+  <details>
+    <summary>How it's built</summary>
+    <p><b>Command layer.</b> C2 issues orders that carry intent (a destination, a formation, a
+      heading) rather than per-vehicle waypoints. Every order has a monotonically increasing ID, so a
+      vessel that hears an old order late simply discards it, and a newer order always supersedes.</p>
+    <p><b>Comms layer.</b> Orders spread by gossip: any node holding the newest order rebroadcasts it
+      to in-range neighbors on a fixed interval. That needs no routing tables, and vessels that drift
+      into range later still get the order. Acknowledgements travel the other way, routed over the
+      shortest path in the <i>current</i> link graph and retried until C2 confirms receipt.</p>
+    <p><b>Link model.</b> Each link has a range limit, per-hop latency with jitter, and random packet
+      loss. Jamming degrades all three at once. Under EMCON (emissions control) the vessels go
+      receive-only, which trades C2's visibility for stealth.</p>
+    <p><b>Autonomy layer.</b> Each vessel computes its own station from the order, so the swarm needs no
+      extra coordination traffic. Relay roles are assigned the same deterministic way: from the
+      distance to the destination and current link conditions, every vessel independently agrees
+      on who becomes a relay, and the chain re-forms as conditions change. Vehicle motion is
+      rate-limited in turn and acceleration.</p>
+    <p><b>Measurement.</b> Time-to-command is measured at C2, from the operator's point of view: the
+      clock stops only when C2 holds every acknowledgement, not when the last vessel hears the order.</p>
+    <p><b>Delivery.</b> One static page in WebGL (Three.js), with no backend, accounts or install.
+      Setup time is however long the page takes to load.</p>
+  </details>
+
+  <details>
+    <summary>Rendering: high level &amp; low level</summary>
+    <p><b>High level: the scene graph.</b> Everything on screen is a node in a Three.js scene graph.
+      Each vessel is a group of meshes with its label attached as a child, so moving or turning the
+      parent carries the whole assembly. Hulls use physically based materials lit by a sky/ground
+      hemisphere light and a directional sun. A perspective camera with orbit controls frames the
+      scene, with a view offset so the action sits beside this panel (or above it on a phone).</p>
+    <p><b>Picking.</b> A click becomes a ray from the camera through the cursor. The ray is tested
+      against the vessel meshes first (select one and its material lights up), then against an
+      analytic sea-level plane to turn the click into a world coordinate for the move order.</p>
+    <p><b>Low level: buffers and shaders.</b> The ocean is a custom GLSL shader. The vertex stage
+      displaces a plane of nearly 80,000 vertices with summed sine waves and derives normals from
+      their slopes; the fragment stage shades by wave height and draws an anti-aliased grid per
+      pixel. Because the waves exist only on the GPU, CPU-side picking deliberately uses the flat
+      surface. All radio packets render in one instanced draw call, with per-instance transform and
+      color buffers rewritten each frame. Mesh links and wakes use preallocated vertex buffers updated
+      in place, trimming the draw range instead of reallocating.</p>
+    <p><b>What's underneath.</b> Each material compiles to a GPU shader program with its own render
+      state; uniforms and vertex attributes are buffers bound to it; each frame is a render pass that
+      clears the target and issues draw calls. WebGL hides much of that behind global state. WebGPU,
+      and the native and Python graphics libraries built on the same model, make it explicit:
+      pipelines, bind groups, command encoders, render passes. A high-level scene graph is the right
+      tool for visualizing 2D/3D data, interactive science and composing scenes quickly; the explicit
+      layer is what you reach for when building engines, custom renderers or cross-platform graphics
+      backends.</p>
+    <p><b>Three.js vs CesiumJS.</b> Three.js is a general-purpose scene graph in local Cartesian
+      coordinates, which suits an abstract patch of ocean. CesiumJS is built for the real Earth: the
+      WGS84 ellipsoid, terrain and imagery streamed as tiles on demand, time-dynamic entities, and
+      camera precision at planetary scale. A version of this demo on real geography, with actual
+      tracks and radio ranges, belongs in Cesium.</p>
+  </details>
+</aside>
+
+<div id="hint">Click the water to send a move order · click a vessel to select · drag to rotate · scroll to zoom</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+// ---------- config ----------
+const N = 6;
+const C2 = -1;                       // node id of the C2 station
+const TOWER = new THREE.Vector3(-150, 0, 40);
+const SPACING = 14;
+const VMAX = 18, TURN = 1.3;         // units/s, rad/s
+const GOSSIP = 0.7;                  // s between rebroadcasts
+const COLORS = { cmd: 0x4cc2ff, ack: 0x5ad19a, lost: 0xff6b6b, link: 0x2f6f94, linkDim: 0x1c3348 };
+
+const state = { formation: 'wedge', emcon: false, relay: true, jam: 0, cmd: null, cmdStart: 0, acked: new Set(), ttc: null, ttf: null };
+
+function comms() {
+  const j = state.jam;
+  return { range: 80 * (1 - 0.6 * j), hop: 0.25 * (1 + 2 * j), loss: 0.05 + 0.35 * j };
+}
+
+// ---------- scene ----------
+const host = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+host.appendChild(renderer.domElement);
+const labels = new CSS2DRenderer();
+labels.domElement.style.cssText = 'position:absolute;inset:0;pointer-events:none';
+host.appendChild(labels.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a1017);
+scene.fog = new THREE.Fog(0x0a1017, 260, 620);
+
+const camera = new THREE.PerspectiveCamera(50, 1, 1, 2000);
+camera.position.set(-50, 170, 240);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(-60, 0, 30);
+controls.enableDamping = true;
+controls.maxPolarAngle = Math.PI * 0.47;
+controls.minDistance = 60;
+controls.maxDistance = 600;
+
+scene.add(new THREE.HemisphereLight(0x9fc8ff, 0x0a1017, 0.9));
+const sun = new THREE.DirectionalLight(0xffffff, 1.4);
+sun.position.set(80, 150, 60);
+scene.add(sun);
+
+// Ocean: a custom shader displaces a subdivided plane on the GPU every frame.
+// Waves are a sum of directional sines; their analytic derivatives give the surface normal,
+// and the reference grid is drawn per-pixel in the fragment shader.
+const oceanMat = new THREE.ShaderMaterial({
+  uniforms: {
+    uTime: { value: 0 },
+    uDeep: { value: new THREE.Color(0x0a1c2b) },
+    uCrest: { value: new THREE.Color(0x1b4a68) },
+    uGrid: { value: new THREE.Color(0x3a6a8c) },
+    uSun: { value: new THREE.Vector3(80, 150, 60).normalize() },
+    uFogColor: { value: new THREE.Color(0x0a1017) },
+    uFogNear: { value: 260 },
+    uFogFar: { value: 620 },
+  },
+  vertexShader: /* glsl */ `
+    uniform float uTime;
+    varying vec3 vWorld;
+    varying vec3 vNormal;
+    varying float vHeight;
+    varying float vDepth;
+
+    // height plus d/dx, d/dy of one directional sine wave
+    vec3 wave(vec2 p, vec2 dir, float k, float amp, float speed) {
+      float ph = dot(dir, p) * k + uTime * speed;
+      return vec3(amp * sin(ph), amp * k * cos(ph) * dir);
+    }
+
+    void main() {
+      vec2 p = position.xy; // plane lies in local XY; the mesh is rotated so local Z is world up
+      vec3 w = wave(p, normalize(vec2(1.0, 0.3)), 0.045, 0.45, 1.1)
+             + wave(p, normalize(vec2(-0.4, 1.0)), 0.07, 0.25, 1.6)
+             + wave(p, normalize(vec2(0.8, -0.7)), 0.13, 0.12, 2.3);
+      vec4 world = modelMatrix * vec4(p, w.x, 1.0);
+      vWorld = world.xyz;
+      vNormal = normalize(mat3(modelMatrix) * vec3(-w.y, -w.z, 1.0));
+      vHeight = w.x;
+      vec4 mv = viewMatrix * world;
+      vDepth = -mv.z;
+      gl_Position = projectionMatrix * mv;
+    }`,
+  fragmentShader: /* glsl */ `
+    uniform vec3 uDeep, uCrest, uGrid, uSun, uFogColor;
+    uniform float uFogNear, uFogFar;
+    varying vec3 vWorld;
+    varying vec3 vNormal;
+    varying float vHeight;
+    varying float vDepth;
+
+    void main() {
+      float diffuse = clamp(dot(normalize(vNormal), uSun), 0.0, 1.0);
+      vec3 col = mix(uDeep, uCrest, smoothstep(-0.7, 0.7, vHeight)) * (0.6 + 0.55 * diffuse);
+      // anti-aliased 20-unit grid: distance to nearest line in screen-space pixels
+      vec2 g = vWorld.xz / 20.0;
+      vec2 d = abs(fract(g - 0.5) - 0.5) / fwidth(g);
+      col = mix(col, uGrid, (1.0 - min(min(d.x, d.y), 1.0)) * 0.35);
+      gl_FragColor = vec4(mix(col, uFogColor, smoothstep(uFogNear, uFogFar, vDepth)), 1.0);
+    }`,
+});
+const ocean = new THREE.Mesh(new THREE.PlaneGeometry(1400, 1400, 280, 280), oceanMat);
+ocean.rotation.x = -Math.PI / 2;
+scene.add(ocean);
+const seaLevel = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+
+function makeLabel(text, cls) {
+  const el = document.createElement('div');
+  el.className = 'label ' + (cls || '');
+  el.textContent = text;
+  return { el, obj: new CSS2DObject(el) };
+}
+
+// C2 station
+const tower = new THREE.Group();
+tower.add(new THREE.Mesh(new THREE.CylinderGeometry(2.2, 4, 26, 8),
+  new THREE.MeshStandardMaterial({ color: 0x9aa9b8, roughness: 0.6 })));
+tower.children[0].position.y = 13;
+const beacon = new THREE.Mesh(new THREE.SphereGeometry(3, 16, 12), new THREE.MeshBasicMaterial({ color: COLORS.cmd }));
+beacon.position.y = 28;
+tower.add(beacon);
+tower.position.copy(TOWER);
+const c2Label = makeLabel('C2', 'c2');
+c2Label.obj.position.set(0, 36, 0);
+tower.add(c2Label.obj);
+scene.add(tower);
+
+const ringGeo = (r) => new THREE.BufferGeometry().setFromPoints(
+  Array.from({ length: 97 }, (_, i) => { const a = i / 96 * Math.PI * 2; return new THREE.Vector3(Math.cos(a) * r, 0, Math.sin(a) * r); }));
+const rangeRing = new THREE.Line(ringGeo(80), new THREE.LineDashedMaterial({ color: COLORS.cmd, dashSize: 4, gapSize: 3, transparent: true, opacity: 0.5 }));
+rangeRing.computeLineDistances();
+rangeRing.position.copy(TOWER).setY(0.3);
+scene.add(rangeRing);
+
+// target marker
+const marker = new THREE.Mesh(new THREE.RingGeometry(4, 5.2, 40), new THREE.MeshBasicMaterial({ color: COLORS.cmd, side: THREE.DoubleSide, transparent: true }));
+marker.rotation.x = -Math.PI / 2;
+marker.visible = false;
+scene.add(marker);
+
+// ---------- vessels ----------
+function hullMesh() {
+  const g = new THREE.Group();
+  const mat = new THREE.MeshStandardMaterial({ color: 0xd6dde5, roughness: 0.5 });
+  const body = new THREE.Mesh(new THREE.BoxGeometry(3.2, 1.6, 7), mat);
+  body.position.y = 0.8;
+  const bow = new THREE.Mesh(new THREE.ConeGeometry(1.6, 3.2, 4), mat);
+  bow.rotation.x = Math.PI / 2; bow.rotation.y = Math.PI / 4; bow.scale.set(1.4, 1, 0.7);
+  bow.position.set(0, 0.8, 5.1);
+  const mast = new THREE.Mesh(new THREE.BoxGeometry(1.2, 2.6, 1.6), new THREE.MeshStandardMaterial({ color: 0x31475e }));
+  mast.position.set(0, 2.6, -0.8);
+  g.add(body, bow, mast);
+  g.userData.hullMat = mat;
+  return g;
+}
+
+const boats = [];
+for (let i = 0; i < N; i++) {
+  const mesh = hullMesh();
+  const label = makeLabel(`USV-${i + 1}`, 'acked');
+  label.obj.position.set(0, 7, 0);
+  mesh.add(label.obj);
+  scene.add(mesh);
+  const trailGeo = new THREE.BufferGeometry();
+  trailGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(150 * 3), 3));
+  const trail = new THREE.Line(trailGeo, new THREE.LineBasicMaterial({ color: 0x5f8fb3, transparent: true, opacity: 0.45 }));
+  scene.add(trail);
+  boats.push({
+    i, mesh, label, trail, trailPts: [], trailT: 0,
+    pos: new THREE.Vector3(TOWER.x + 30 + (i % 3) * 10, 0, TOWER.z - 10 + Math.floor(i / 3) * 12),
+    heading: Math.PI / 2, speed: 0,
+    known: null, hop: 1, parent: C2,
+    ackPending: false, ackInflight: false, timer: Math.random() * GOSSIP,
+  });
+}
+
+// ---------- formations ----------
+function slotOffset(f, i, n) {
+  switch (f) {
+    case 'line': return [(i - (n - 1) / 2) * SPACING, 0];
+    case 'column': return [0, i * SPACING];
+    case 'circle': { const r = SPACING * Math.max(n, 3) / (2 * Math.PI) * 1.3, a = i / n * Math.PI * 2; return [Math.cos(a) * r, Math.sin(a) * r]; }
+    default: { const k = Math.ceil(i / 2), s = i % 2 ? -1 : 1; return [s * k * SPACING, k * SPACING]; } // wedge
+  }
+}
+// When the destination is beyond radio range of C2, the highest-numbered vessels peel off
+// and space themselves along the line back to C2 so orders and acks can still hop through.
+function relayCount(cmd) {
+  if (!state.relay) return 0;
+  const dist = cmd.center.distanceTo(TOWER);
+  return THREE.MathUtils.clamp(Math.ceil(dist / (comms().range * 0.8)) - 1, 0, N - 3);
+}
+const isRelay = (cmd, i) => i >= N - relayCount(cmd);
+function slotFor(cmd, i) {
+  const k = relayCount(cmd), m = N - k;
+  if (i >= m) {
+    const j = N - i; // USV-N sits nearest C2
+    return TOWER.clone().lerp(cmd.center, j / (k + 1)).setY(0);
+  }
+  const [x, z] = slotOffset(cmd.formation, i, m);
+  const f = cmd.dir, r = new THREE.Vector3(f.z, 0, -f.x);
+  return cmd.center.clone().addScaledVector(r, x).addScaledVector(f, -z);
+}
+
+// ---------- network ----------
+let now = 0;
+const posOf = (n) => n === C2 ? TOWER : boats[n].pos;
+const inRange = (a, b) => posOf(a).distanceTo(posOf(b)) <= comms().range;
+const transmits = (n) => n === C2 || !state.emcon;
+
+const packets = [];
+const inflight = new Set();
+// All packets render in a single instanced draw call: one sphere geometry, plus per-instance
+// transform and color buffers that are rewritten each frame.
+const MAX_PACKETS = 256;
+const packetMesh = new THREE.InstancedMesh(new THREE.SphereGeometry(1.4, 10, 8), new THREE.MeshBasicMaterial(), MAX_PACKETS);
+packetMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+packetMesh.setColorAt(0, new THREE.Color()); // allocate the color buffer before first compile
+packetMesh.instanceColor.setUsage(THREE.DynamicDrawUsage);
+packetMesh.frustumCulled = false;
+packetMesh.count = 0;
+scene.add(packetMesh);
+const _m = new THREE.Matrix4(), _c = new THREE.Color();
+
+function spawnPacket(p, color) {
+  p.color = color;
+  p.pos = new THREE.Vector3();
+  p.scale = 1;
+  packets.push(p);
+}
+function writePacketInstances() {
+  let n = 0;
+  for (const p of packets) {
+    if (n === MAX_PACKETS) break;
+    _m.makeScale(p.scale, p.scale, p.scale).setPosition(p.pos);
+    packetMesh.setMatrixAt(n, _m);
+    packetMesh.setColorAt(n, _c.setHex(p.color));
+    n++;
+  }
+  packetMesh.count = n;
+  packetMesh.instanceMatrix.needsUpdate = true;
+  packetMesh.instanceColor.needsUpdate = true;
+}
+function hopTime() { return comms().hop * (0.8 + Math.random() * 0.4); }
+
+function sendCmd(from, to, cmd) {
+  const key = cmd.id + ':' + to;
+  if (inflight.has(key)) return;
+  const lost = Math.random() < comms().loss;
+  if (!lost) inflight.add(key);
+  spawnPacket({ type: 'cmd', from, to, cmd, lost, t0: now, t1: now + hopTime() }, lost ? COLORS.lost : COLORS.cmd);
+}
+
+// shortest path (by hops) from a vessel back to C2 over currently-transmitting nodes
+function routeToC2(start) {
+  const prev = new Map([[start, null]]);
+  const q = [start];
+  while (q.length) {
+    const n = q.shift();
+    if (n === C2) {
+      const path = [];
+      for (let c = C2; c !== null; c = prev.get(c)) path.unshift(c);
+      return path;
+    }
+    for (const m of [C2, ...boats.map(b => b.i)]) {
+      if (prev.has(m) || !transmits(n) || !inRange(n, m)) continue;
+      if (m !== C2 && !transmits(m)) continue;
+      prev.set(m, n);
+      q.push(m);
+    }
+  }
+  return null;
+}
+
+function sendAck(b) {
+  const path = routeToC2(b.i);
+  if (!path) return;
+  b.ackInflight = true;
+  const lost = Math.random() < comms().loss;
+  spawnPacket({ type: 'ack', boat: b.i, cmdId: state.cmd.id, path, k: 0, from: path[0], to: path[1], lost, t0: now, t1: now + hopTime() },
+    lost ? COLORS.lost : COLORS.ack);
+}
+
+function gossip(n) {
+  const cmd = n === C2 ? state.cmd : boats[n].known;
+  if (!cmd || !transmits(n)) return;
+  for (const b of boats) {
+    if (b.i === n || (b.known && b.known.id >= cmd.id)) continue;
+    if (inRange(n, b.i)) sendCmd(n, b.i, cmd);
+  }
+}
+
+function deliver(p) {
+  if (p.type === 'cmd') {
+    inflight.delete(p.cmd.id + ':' + p.to);
+    const b = boats[p.to];
+    if (b.known && b.known.id >= p.cmd.id) return;
+    b.known = p.cmd;
+    b.parent = p.from;
+    b.hop = p.from === C2 ? 1 : (boats[p.from].hop + 1);
+    b.ackPending = true;
+    b.ackInflight = false;
+    b.timer = Math.min(b.timer, 0.05); // relay promptly
+    return;
+  }
+  // ack: advance one hop
+  const b = boats[p.boat];
+  if (p.cmdId !== state.cmd.id) { b.ackInflight = false; return; }
+  if (p.to === C2) {
+    b.ackPending = false; b.ackInflight = false;
+    state.acked.add(b.i);
+    if (state.acked.size === N && state.ttc === null) state.ttc = now - state.cmdStart;
+    return;
+  }
+  const k = p.k + 1, from = p.path[k], to = p.path[k + 1];
+  if (!transmits(from) || !inRange(from, to)) { b.ackInflight = false; return; }
+  const lost = Math.random() < comms().loss;
+  spawnPacket({ ...p, k, from, to, lost, t0: now, t1: now + hopTime(), pos: undefined }, lost ? COLORS.lost : COLORS.ack);
+}
+
+let c2Timer = 0;
+function networkStep(dt) {
+  c2Timer -= dt;
+  if (c2Timer <= 0) { c2Timer = GOSSIP; gossip(C2); }
+  for (const b of boats) {
+    b.timer -= dt;
+    if (b.timer > 0) continue;
+    b.timer = GOSSIP;
+    gossip(b.i);
+    if (b.ackPending && !b.ackInflight && transmits(b.i)) sendAck(b);
+  }
+  for (let k = packets.length - 1; k >= 0; k--) {
+    const p = packets[k];
+    const t = (now - p.t0) / (p.t1 - p.t0);
+    if (p.lost) {
+      if (t >= 0.55) {
+        if (p.type === 'ack') boats[p.boat].ackInflight = false;
+        packets.splice(k, 1); continue;
+      }
+      p.scale = 1 - t / 0.55; // lost packets shrink away
+    }
+    if (t >= 1) { packets.splice(k, 1); deliver(p); continue; }
+    p.pos.lerpVectors(posOf(p.from), posOf(p.to), t).setY(4 + Math.sin(t * Math.PI) * 6);
+  }
+}
+
+// mesh links
+const maxSeg = (N + 1) * N / 2;
+const linkGeo = new THREE.BufferGeometry();
+linkGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(maxSeg * 6), 3));
+const links = new THREE.LineSegments(linkGeo, new THREE.LineBasicMaterial({ color: COLORS.link, transparent: true, opacity: 0.7 }));
+scene.add(links);
+function updateLinks() {
+  const arr = linkGeo.attributes.position.array;
+  const nodes = [C2, ...boats.map(b => b.i)];
+  let s = 0;
+  for (let a = 0; a < nodes.length; a++) for (let c = a + 1; c < nodes.length; c++) {
+    const A = nodes[a], B = nodes[c];
+    if (!inRange(A, B) || (!transmits(A) && !transmits(B))) continue;
+    const pa = posOf(A), pb = posOf(B);
+    arr.set([pa.x, A === C2 ? 4 : 2, pa.z, pb.x, B === C2 ? 4 : 2, pb.z], s * 6);
+    s++;
+  }
+  linkGeo.setDrawRange(0, s * 2);
+  linkGeo.attributes.position.needsUpdate = true;
+  links.material.color.setHex(state.emcon ? COLORS.linkDim : COLORS.link);
+}
+
+// ---------- vessel dynamics ----------
+function wrap(a) { return Math.atan2(Math.sin(a), Math.cos(a)); }
+function boatStep(b, dt) {
+  if (b.known) {
+    const target = slotFor(b.known, b.i);
+    const d = target.clone().sub(b.pos); d.y = 0;
+    const dist = d.length();
+    let want, vWant;
+    if (dist > 1.5) { want = Math.atan2(d.x, d.z); vWant = Math.min(VMAX, dist * 0.9); }
+    else { want = Math.atan2(b.known.dir.x, b.known.dir.z); vWant = 0; }
+    const err = wrap(want - b.heading);
+    b.heading += THREE.MathUtils.clamp(err, -TURN * dt, TURN * dt);
+    if (Math.abs(err) > 1.2 && dist > 1.5) vWant *= 0.35; // slow for tight turns
+    b.speed += THREE.MathUtils.clamp(vWant - b.speed, -12 * dt, 8 * dt);
+  }
+  b.pos.x += Math.sin(b.heading) * b.speed * dt;
+  b.pos.z += Math.cos(b.heading) * b.speed * dt;
+  b.mesh.position.set(b.pos.x, Math.sin(now * 2 + b.i) * 0.25, b.pos.z);
+  b.mesh.rotation.set(Math.sin(now * 1.7 + b.i) * 0.03, b.heading, 0);
+
+  b.trailT -= dt;
+  if (b.trailT <= 0 && b.speed > 0.5) {
+    b.trailT = 0.15;
+    b.trailPts.push(b.pos.x, 0.2, b.pos.z);
+    if (b.trailPts.length > 450) b.trailPts.splice(0, 3);
+    b.trail.geometry.attributes.position.array.set(b.trailPts);
+    b.trail.geometry.setDrawRange(0, b.trailPts.length / 3);
+    b.trail.geometry.attributes.position.needsUpdate = true;
+  }
+}
+
+// ---------- commands ----------
+function fleetCentroid() {
+  return boats.reduce((c, b) => c.add(b.pos), new THREE.Vector3()).multiplyScalar(1 / N);
+}
+function issueCommand(center, formation) {
+  const prev = state.cmd;
+  let dir = center.clone().sub(fleetCentroid()).setY(0);
+  dir = dir.length() > 5 ? dir.normalize() : (prev ? prev.dir.clone() : new THREE.Vector3(1, 0, 0));
+  state.cmd = { id: (prev ? prev.id : 0) + 1, center: center.clone(), dir, formation };
+  state.cmdStart = now;
+  state.acked = new Set();
+  state.ttc = null; state.ttf = null;
+  for (const b of boats) { b.ackPending = false; b.ackInflight = false; }
+  c2Timer = 0;
+  marker.position.copy(center).setY(0.4);
+  marker.visible = true;
+}
+
+// initial order, known to everyone
+state.cmd = { id: 0, center: new THREE.Vector3(-70, 0, 40), dir: new THREE.Vector3(1, 0, 0), formation: 'wedge' };
+for (const b of boats) b.known = state.cmd;
+state.acked = new Set(boats.map(b => b.i));
+
+// ---------- input ----------
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+let down = null;
+renderer.domElement.addEventListener('pointerdown', e => { down = { x: e.clientX, y: e.clientY, t: performance.now() }; });
+renderer.domElement.addEventListener('pointerup', e => {
+  if (!down) return;
+  const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y), held = performance.now() - down.t;
+  down = null;
+  if (moved > 6 || held > 500) return; // that was a drag
+  const r = renderer.domElement.getBoundingClientRect();
+  ndc.set((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+  // 1) object picking against vessel meshes
+  const boatHit = ray.intersectObjects(boats.map(b => b.mesh), true)[0];
+  if (boatHit) {
+    const b = boats.find(b => b.mesh === boatHit.object.parent || b.mesh === boatHit.object);
+    select(selected === b ? null : b);
+    return;
+  }
+  // 2) otherwise intersect the analytic sea-level plane; the GPU-displaced waves exist only in the
+  //    vertex shader, so CPU-side picking uses the undisturbed surface
+  const point = ray.ray.intersectPlane(seaLevel, new THREE.Vector3());
+  if (point && point.length() < 600) issueCommand(point, state.formation);
+});
+
+let selected = null;
+function select(b) {
+  if (selected) { selected.mesh.userData.hullMat.emissive.setHex(0x000000); document.getElementById('chip' + selected.i).style.outline = ''; }
+  selected = b;
+  if (b) { b.mesh.userData.hullMat.emissive.setHex(0x1f6f9f); document.getElementById('chip' + b.i).style.outline = '2px solid var(--accent)'; }
+}
+
+document.querySelectorAll('#formations button').forEach(btn => btn.addEventListener('click', () => {
+  state.formation = btn.dataset.f;
+  document.querySelectorAll('#formations button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+  issueCommand(state.cmd.center, state.formation);
+}));
+const jam = document.getElementById('jam');
+jam.addEventListener('input', () => { state.jam = jam.value / 100; document.getElementById('jamVal').textContent = jam.value + '%'; });
+document.getElementById('emcon').addEventListener('change', e => { state.emcon = e.target.checked; });
+document.getElementById('relay').addEventListener('change', e => { state.relay = e.target.checked; });
+const panel = document.getElementById('panel');
+document.getElementById('collapse').addEventListener('click', e => {
+  panel.classList.toggle('collapsed');
+  e.target.textContent = panel.classList.contains('collapsed') ? '▴' : '▾';
+});
+
+// ---------- HUD ----------
+const fleetEl = document.getElementById('fleet');
+fleetEl.innerHTML = boats.map(b => `<div class="chip" id="chip${b.i}"><b>USV-${b.i + 1}<i></i></b><span></span></div>`).join('');
+const fmt = (s) => s.toFixed(1) + ' s';
+let hudT = 0;
+function updateHud(dt) {
+  hudT -= dt;
+  if (hudT > 0) return;
+  hudT = 0.1;
+  const c = comms();
+  document.getElementById('comms').textContent =
+    `range ${c.range.toFixed(0)} · hop ${(c.hop * 1000).toFixed(0)} ms · loss ${(c.loss * 100).toFixed(0)}%`;
+  const ttcEl = document.getElementById('ttc'), ttfEl = document.getElementById('ttf');
+  const elapsed = now - state.cmdStart;
+  if (state.cmd.id === 0) { ttcEl.textContent = '—'; ttcEl.className = 'v'; }
+  else if (state.ttc !== null) { ttcEl.textContent = fmt(state.ttc); ttcEl.className = 'v'; ttcEl.style.color = 'var(--ok)'; }
+  else if (state.emcon) { ttcEl.textContent = `unconfirmed (${state.acked.size}/${N})`; ttcEl.className = 'v small'; ttcEl.style.color = 'var(--warn)'; }
+  else { ttcEl.textContent = fmt(elapsed); ttcEl.className = 'v'; ttcEl.style.color = 'var(--muted)'; }
+  if (state.cmd.id === 0) ttfEl.textContent = '—';
+  else if (state.ttf !== null) { ttfEl.textContent = fmt(state.ttf); ttfEl.style.color = 'var(--ok)'; }
+  else { ttfEl.textContent = fmt(elapsed); ttfEl.style.color = 'var(--muted)'; }
+
+  for (const b of boats) {
+    const has = b.known && b.known.id === state.cmd.id;
+    const status = state.acked.has(b.i) ? 'acked' : has ? 'rx' : 'pending';
+    const chip = document.getElementById('chip' + b.i);
+    chip.className = 'chip ' + status;
+    const role = b.known && isRelay(b.known, b.i) ? '⇄ ' : '';
+    chip.querySelector('span').textContent = role + (status === 'acked' ? '✓ ack' : status === 'rx' ? 'rx' : 'no order');
+    chip.querySelector('i').textContent = status === 'pending' ? '' : `${b.hop}h`;
+    b.label.el.className = 'label ' + status;
+  }
+}
+
+function checkFormation() {
+  if (state.ttf !== null || state.cmd.id === 0) return;
+  const done = boats.every(b => b.known && b.known.id === state.cmd.id && b.pos.distanceTo(slotFor(state.cmd, b.i)) < 2.5);
+  if (done) state.ttf = now - state.cmdStart;
+}
+
+// ---------- embedded on the homepage ----------
+// Inside an iframe, rotate/zoom start locked so scrolling and swiping still move the parent page.
+const EMBED = new URLSearchParams(location.search).has('embed') || window.self !== window.top;
+const hint = document.getElementById('hint');
+function setInteractive(on) {
+  controls.enabled = on;
+  renderer.domElement.style.touchAction = on ? 'none' : 'pan-y';
+  hint.innerHTML = (on ? 'Drag to rotate · scroll to zoom' : 'Tap the water to send orders') +
+    `<button type="button">${on ? 'Lock view' : 'Enable rotate &amp; zoom'}</button>` +
+    '<a href="./" target="_top">Full screen ↗</a>';
+  hint.querySelector('button').onclick = () => setInteractive(!on);
+}
+if (EMBED) {
+  document.body.classList.add('embed');
+  setInteractive(false);
+  if (innerWidth <= 640) { panel.classList.add('collapsed'); document.getElementById('collapse').textContent = '▴'; }
+}
+
+// ---------- loop ----------
+function resize() {
+  const w = host.clientWidth, h = host.clientHeight;
+  renderer.setSize(w, h); labels.setSize(w, h);
+  camera.aspect = w / h;
+  // shift the view so the action sits beside the panel (desktop) or above it (phone)
+  const phone = w <= 640;
+  const dx = phone ? 0 : -Math.min(170, w * 0.15);
+  const dy = phone ? h * 0.22 : 0;
+  camera.setViewOffset(w, h, dx, dy, w, h);
+}
+addEventListener('resize', resize);
+resize();
+
+const clock = new THREE.Clock();
+renderer.setAnimationLoop(() => {
+  const dt = Math.min(clock.getDelta(), 0.05);
+  now += dt;
+  for (const b of boats) boatStep(b, dt);
+  networkStep(dt);
+  writePacketInstances();
+  oceanMat.uniforms.uTime.value = now;
+  updateLinks();
+  checkFormation();
+  const r = comms().range;
+  rangeRing.scale.set(r / 80, 1, r / 80);
+  beacon.material.color.setHex(state.emcon ? 0xffb547 : COLORS.cmd);
+  marker.material.opacity = 0.5 + 0.4 * Math.sin(now * 4);
+  updateHud(dt);
+  controls.update();
+  renderer.render(scene, camera);
+  labels.render(scene, camera);
+});
+</script>
+</body>
+</html>
