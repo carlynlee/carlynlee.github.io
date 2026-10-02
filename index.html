@@ -198,9 +198,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h3>Swarm Command Demo</h3>
-                    <p>A toy model of mesh-relayed command and control (C2), inspired by my field work on autonomous maritime swarms, delay-tolerant networking, and comms for the DARPA Subterranean Challenge. It brings together the pieces of a multi-vehicle autonomy system: an operator's C2 node, a degraded radio mesh, and vessels that keep operating on their own when communication links drop out.</p>
-                    <p>From the dashboard you can send orders, jam the radios, or go radio-silent (EMCON). Orders are versioned and relayed hop by hop, every vessel acknowledges back to C2, and the page tracks two operational metrics: time to command (from click until every vessel has confirmed) and time to formation (from click until every vessel is on station).</p>
+                    <h3>Swarm Network Demo</h3>
+                    <p>A toy model of a robot swarm coordinating over a mesh radio network, inspired by my field work on autonomous maritime swarms, delay-tolerant networking, and comms for the DARPA Subterranean Challenge. It brings together the pieces of a multi-vehicle autonomy system: an operator's base station, an unreliable radio mesh, and vessels that keep operating on their own when communication links drop out.</p>
+                    <p>From the dashboard you can send commands, add radio interference, or switch the radios to receive-only. Commands are versioned and relayed hop by hop, every vessel acknowledges back to the base station, and the page tracks two performance metrics: time to command (from click until every vessel has confirmed) and time to formation (from click until every vessel is on station).</p>
                     <p>It runs entirely in the browser on a Three.js scene graph, with a custom GPU shader for the ocean and instanced rendering for the radio traffic. Notes inside the demo walk through the architecture, from the command layer to shaders and GPU buffers.</p>
                     <a href="swarm/" class="btn btn-lg btn-light">Open full screen</a>
                 </div>
@@ -210,7 +210,7 @@
 
     <!-- Swarm demo -->
     <section id="demo" class="demo-embed">
-        <iframe src="swarm/?embed" title="Swarm Command Demo" loading="lazy"></iframe>
+        <iframe src="swarm/?embed" title="Swarm Network Demo" loading="lazy"></iframe>
     </section>
 
     <!-- Footer -->

@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Swarm Command Demo</title>
+<title>Swarm Network Demo</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%234cc2ff'/></svg>">
-<meta name="description" content="Interactive toy model of mesh-relayed command and control for a swarm of autonomous surface vessels, with jamming, EMCON, and time-to-command metrics.">
+<meta name="description" content="Interactive toy model of a swarm of autonomous boats coordinating over a mesh radio network, with interference, radio silence, and time-to-command metrics.">
 <style>
   :root {
     --bg: #0a1017;
@@ -90,8 +90,8 @@
 <aside class="panel" id="panel">
   <header style="display:flex;justify-content:space-between;align-items:start;gap:8px">
     <div>
-      <h1>Swarm Command Demo</h1>
-      <p class="sub">Mesh-relayed C2 for 6 autonomous surface vessels</p>
+      <h1>Swarm Network Demo</h1>
+      <p class="sub">6 autonomous boats on a mesh radio network</p>
     </div>
     <button id="collapse" aria-label="Toggle panel">▾</button>
   </header>
@@ -106,12 +106,12 @@
 
   <h2>Environment</h2>
   <div class="toggle">
-    <label for="jam">Jamming</label>
+    <label for="jam">Interference</label>
     <span id="jamVal" style="font-family:var(--mono)">0%</span>
   </div>
   <input id="jam" type="range" min="0" max="100" value="0">
   <div class="toggle">
-    <label for="emcon">EMCON (vehicles radio-silent)</label>
+    <label for="emcon">Radio silence (vehicles receive only)</label>
     <input id="emcon" type="checkbox">
   </div>
   <div class="toggle">
@@ -140,37 +140,37 @@
 
   <details>
     <summary>What am I looking at?</summary>
-    <p>A toy model of command and control for a swarm of autonomous surface vessels. Commands leave the
-      C2 node and hop vessel-to-vessel across a radio mesh, each hop adding latency and risk of loss.
-      <b>Time-to-command</b> runs from your click until C2 holds acknowledgements from every vessel;
+    <p>A toy model of a swarm of autonomous boats coordinating over a radio mesh. Commands leave the
+      base station and hop vessel-to-vessel, each hop adding latency and risk of loss.
+      <b>Time-to-command</b> runs from your click until the base station holds acknowledgements from every vessel;
       <b>time-to-formation</b> runs until every vessel is on station.</p>
-    <p>With <b>auto relay chain</b> on, vessels detach to bridge the gap back to C2 whenever the
-      destination is out of radio range, and the chain re-forms on its own as jamming changes.</p>
-    <p>Jamming shrinks radio range and raises loss. Under EMCON the vessels stop transmitting: no relays,
-      no acks. Out-of-range vessels keep executing their last known orders, and C2 can't confirm anything.</p>
-    <p>Inspired by field work on autonomous maritime swarms with NAVAIR and comms for DARPA SubT.
+    <p>With <b>auto relay chain</b> on, vessels detach to bridge the gap back to the base station whenever the
+      destination is out of radio range, and the chain re-forms on its own as interference changes.</p>
+    <p>Interference shrinks radio range and raises loss. In radio silence the vessels stop transmitting: no relays,
+      no acks. Out-of-range vessels keep executing their last known commands, and the base station can't confirm anything.</p>
+    <p>Inspired by field work on autonomous maritime swarms and on comms for the DARPA Subterranean Challenge.
       <a href="../" target="_top">Back to carlynlee.github.io</a></p>
   </details>
 
   <details>
     <summary>How it's built</summary>
-    <p><b>Command layer.</b> C2 issues orders that carry intent (a destination, a formation, a
-      heading) rather than per-vehicle waypoints. Every order has a monotonically increasing ID, so a
-      vessel that hears an old order late simply discards it, and a newer order always supersedes.</p>
-    <p><b>Comms layer.</b> Orders spread by gossip: any node holding the newest order rebroadcasts it
+    <p><b>Command layer.</b> The base station issues commands that carry goals (a destination, a formation, a
+      heading) rather than per-vehicle waypoints. Every command has a monotonically increasing ID, so a
+      vessel that hears an old command late simply discards it, and a newer command always supersedes.</p>
+    <p><b>Comms layer.</b> Commands spread by gossip: any node holding the newest command rebroadcasts it
       to in-range neighbors on a fixed interval. That needs no routing tables, and vessels that drift
-      into range later still get the order. Acknowledgements travel the other way, routed over the
-      shortest path in the <i>current</i> link graph and retried until C2 confirms receipt.</p>
+      into range later still get the command. Acknowledgements travel the other way, routed over the
+      shortest path in the <i>current</i> link graph and retried until the base station confirms receipt.</p>
     <p><b>Link model.</b> Each link has a range limit, per-hop latency with jitter, and random packet
-      loss. Jamming degrades all three at once. Under EMCON (emissions control) the vessels go
-      receive-only, which trades C2's visibility for stealth.</p>
-    <p><b>Autonomy layer.</b> Each vessel computes its own station from the order, so the swarm needs no
+      loss. Interference degrades all three at once. In radio silence the vessels go receive-only,
+      so they keep working but the base station loses its view of the fleet.</p>
+    <p><b>Autonomy layer.</b> Each vessel computes its own station from the command, so the swarm needs no
       extra coordination traffic. Relay roles are assigned the same deterministic way: from the
       distance to the destination and current link conditions, every vessel independently agrees
       on who becomes a relay, and the chain re-forms as conditions change. Vehicle motion is
       rate-limited in turn and acceleration.</p>
-    <p><b>Measurement.</b> Time-to-command is measured at C2, from the operator's point of view: the
-      clock stops only when C2 holds every acknowledgement, not when the last vessel hears the order.</p>
+    <p><b>Measurement.</b> Time-to-command is measured at the base station, from the operator's point of view: the
+      clock stops only when it holds every acknowledgement, not when the last vessel hears the command.</p>
     <p><b>Delivery.</b> One static page in WebGL (Three.js), with no backend, accounts or install.
       Setup time is however long the page takes to load.</p>
   </details>
@@ -184,7 +184,7 @@
       scene, with a view offset so the action sits beside this panel (or above it on a phone).</p>
     <p><b>Picking.</b> A click becomes a ray from the camera through the cursor. The ray is tested
       against the vessel meshes first (select one and its material lights up), then against an
-      analytic sea-level plane to turn the click into a world coordinate for the move order.</p>
+      analytic sea-level plane to turn the click into a world coordinate for the move command.</p>
     <p><b>Low level: buffers and shaders.</b> The ocean is a custom GLSL shader. The vertex stage
       displaces a plane of nearly 80,000 vertices with summed sine waves and derives normals from
       their slopes; the fragment stage shades by wave height and draws an anti-aliased grid per
@@ -208,7 +208,7 @@
   </details>
 </aside>
 
-<div id="hint">Click the water to send a move order · click a vessel to select · drag to rotate · scroll to zoom</div>
+<div id="hint">Click the water to send a move command · click a vessel to select · drag to rotate · scroll to zoom</div>
 
 <script type="importmap">
 { "imports": {
@@ -343,7 +343,7 @@ const beacon = new THREE.Mesh(new THREE.SphereGeometry(3, 16, 12), new THREE.Mes
 beacon.position.y = 28;
 tower.add(beacon);
 tower.position.copy(TOWER);
-const c2Label = makeLabel('C2', 'c2');
+const c2Label = makeLabel('BASE', 'c2');
 c2Label.obj.position.set(0, 36, 0);
 tower.add(c2Label.obj);
 scene.add(tower);
@@ -718,7 +718,7 @@ function updateHud(dt) {
     const chip = document.getElementById('chip' + b.i);
     chip.className = 'chip ' + status;
     const role = b.known && isRelay(b.known, b.i) ? '⇄ ' : '';
-    chip.querySelector('span').textContent = role + (status === 'acked' ? '✓ ack' : status === 'rx' ? 'rx' : 'no order');
+    chip.querySelector('span').textContent = role + (status === 'acked' ? '✓ ack' : status === 'rx' ? 'rx' : 'waiting');
     chip.querySelector('i').textContent = status === 'pending' ? '' : `${b.hop}h`;
     b.label.el.className = 'label ' + status;
   }
@@ -737,7 +737,7 @@ const hint = document.getElementById('hint');
 function setInteractive(on) {
   controls.enabled = on;
   renderer.domElement.style.touchAction = on ? 'none' : 'pan-y';
-  hint.innerHTML = (on ? 'Drag to rotate · scroll to zoom' : 'Tap the water to send orders') +
+  hint.innerHTML = (on ? 'Drag to rotate · scroll to zoom' : 'Tap the water to send commands') +
     `<button type="button">${on ? 'Lock view' : 'Enable rotate &amp; zoom'}</button>` +
     '<a href="./" target="_top">Full screen ↗</a>';
   hint.querySelector('button').onclick = () => setInteractive(!on);
